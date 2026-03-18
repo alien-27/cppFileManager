@@ -1,36 +1,70 @@
 ﻿#include "MainApp.h"
 
-namespace fs = std::filesystem;
-
+#include <iostream>
 MainApp::MainApp() {
-    curPath = "C:\\Users\\2000389\\OneDrive - Dundee and Angus College\\Documents";
+    //curPath = "C:\\Users\\2000389\\OneDrive - Dundee and Angus College\\Documents";
     std::cout << curPath << std::endl;
-    fileList = getFiles(curPath);
-
-    changeSelect(-1);
-}
-
-std::vector<File> MainApp::getFiles(std::string path) {
     selected = 0;
-    std::vector<File> newList;
+    fileList = ctrl.getFiles(curPath);
 
-    for (auto& p : fs::directory_iterator(path)) {
-        std::string curF = p.path().string();
+    input.clear();
+    view.displayFiles(curPath, fileList, selected);
 
-        File temp = File(
-            p.path().filename().stem().string(),
-            p.path().extension().string(),
-            (int)p.file_size(),
-            p.is_directory()
-        );
+    do {
+        int charInput = input.getch();
 
-        newList.push_back(temp);
-    }
+#ifdef _WIN32
+// WINDOWS
+        if (charInput == 0 || charInput == 224) { // Special keys
+            charInput = input.getch();
+            switch (charInput) {
+                case 72: // Up Arrow
+                    selected = ctrl.setSelect(selected - 1, -1, fileList.size());
+                    break;
+                case 80: // Down Arrow
+                    selected = ctrl.setSelect(selected + 1, -1, fileList.size());
+                    break;
+                case 71: // Home
+                    selected = ctrl.setSelect(-1, -1, fileList.size());
+                    break;
+                case 79: // End
+                    selected = ctrl.setSelect(fileList.size() - 1, -1, fileList.size());
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            switch (charInput) {
+                case 8: // Backspace
+                    back();
+                    break;
+                case 13: // Enter
 
-    return newList;
+                    break;
+                default:
+                    break;
+            }
+        }
+#else
+// MAC & LINUX
+
+        // TO-DO: add linux and mac implementatoin
+
+#endif
+
+        input.clear();
+        view.displayFiles(curPath, fileList, selected);
+
+        std::cout << charInput;
+    } while (true);
 }
 
-void MainApp::changeSelect(int a) {
-    selected += a;
-    view.displayFiles(fileList, selected);
+void MainApp::back() {
+    fs::path current = fs::current_path();
+    fs::current_path(current.parent_path());
+    curPath = fs::current_path().string();
+
+    selected = 0;
+    fileList = ctrl.getFiles(curPath);
 }

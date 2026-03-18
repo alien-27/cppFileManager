@@ -9,6 +9,6 @@ class MainView {
 private:
 	void setColour(bool selected);
 public:
-	void displayFiles(std::vector<File> f, int selected);
+	void displayFiles(std::string title, std::vector<File> f, int selected);
 };
 

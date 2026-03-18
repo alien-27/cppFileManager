@@ -1,11 +1,15 @@
 ﻿#include "File.h"
 
+#include <chrono>
 #include <string>
 
-File::File(std::string name, std::string extension, int size, bool isFolder) {
+using namespace std::chrono_literals;
+
+File::File(std::string name, std::string extension, int size, std::time_t dateMod, bool isFolder) {
 	this->name = name;
 	this->extension = extension;
 	this->size = size;
+	this->dateMod = dateMod;
 	this->isFolder = isFolder;
 
 	if (isFolder) this->extension = "/";
@@ -14,6 +18,7 @@ File::File(std::string name, std::string extension, int size, bool isFolder) {
 std::string File::getName() const { return name; }
 std::string File::getExtension() const { return extension; }
 int File::getSize() const { return size; }
+std::time_t File::getDateMod() const { return dateMod; };
 bool File::getIsFolder() const { return isFolder; }
 
 std::string File::getNameWithExtension() const {
@@ -29,16 +34,13 @@ std::string File::getIsFolderStr() const {
 	}
 }
 
-std::string File::toString() {
-	std::string returnString;
+std::string File::getDateModStr() const {
+	char buffer[26];
 
-	if (isFolder) {
-		returnString = "|- ";
-	} else {
-		returnString = "|  ";
+	//std::strftime(buffer, sizeof(buffer), "%A %c", std::localtime(&t)) to-do: try this?
+
+	if (ctime_s(buffer, sizeof(buffer), &dateMod) == 0) {
+		return std::string(buffer);
 	}
-
-	returnString += name + " - " + std::to_string(size) + " bytes";
-
-	return returnString;
+	return "?";
 }
