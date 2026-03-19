@@ -35,12 +35,15 @@ std::string File::getIsFolderStr() const {
 }
 
 std::string File::getDateModStr() const {
-	char buffer[26];
+	//char buffer[26];
 
 	//std::strftime(buffer, sizeof(buffer), "%A %c", std::localtime(&t)) to-do: try this?
 
-	if (ctime_s(buffer, sizeof(buffer), &dateMod) == 0) {
-		return std::string(buffer);
-	}
+	//if (ctime_s(buffer, sizeof(buffer), &dateMod) == 0) {
+	//	return std::string(buffer);
+	//}
+
+	return std::ctime(&dateMod);
+
 	return "?";
 }

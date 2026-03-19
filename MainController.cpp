@@ -11,11 +11,19 @@ std::vector<File> MainController::getFiles(std::string path) {
         auto ftime = fs::last_write_time(p.path());
         auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now());
 
+        int fileSize = 0;
+
+        if (p.is_directory()) {
+            fileSize = 0;
+        } else {
+            fileSize = (int)p.file_size();
+        }
+
         // Create file
         File temp = File(
             p.path().filename().stem().string(),
             p.path().extension().string(),
-            (int)p.file_size(),
+            fileSize,
             std::chrono::system_clock::to_time_t(sctp),
             p.is_directory()
         );

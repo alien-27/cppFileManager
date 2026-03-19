@@ -48,8 +48,36 @@ MainApp::MainApp() {
         }
 #else
 // MAC & LINUX
+        if (charInput == 91) {
+            charInput = input.getch();
+            switch (charInput) {
+                case 65: // Up Arrow
+                    selected = ctrl.setSelect(selected - 1, -1, fileList.size());
+                    break;
+                case 66: // Down Arrow
+                    selected = ctrl.setSelect(selected + 1, -1, fileList.size());
+                    break;
+                case 72: // Home
+                    selected = ctrl.setSelect(-1, -1, fileList.size());
+                    break;
+                case 70: // End
+                    selected = ctrl.setSelect(fileList.size() - 1, -1, fileList.size());
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (charInput) {
+                case 127: // Backspace
+                    back();
+                    break;
+                case 10: // Enter
 
-        // TO-DO: add linux and mac implementatoin
+                    break;
+                default:
+                    break;
+            }
+        }
 
 #endif
 
