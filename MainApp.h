@@ -21,8 +21,10 @@ class MainApp
 		std::vector<File> fileList;
 		int selected;
 		std::string curPath = fs::current_path().string();
+		bool isSearch = false; // if the current list of files is a search result
 
 		void back();
+		void enter();
 	public:
 		MainApp();
 };
