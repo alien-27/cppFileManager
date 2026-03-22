@@ -76,10 +76,10 @@ void MainView::setColour(bool selected) {
 }
 
 void MainView::printFooter() {
-    std::cout << "\033[44m\033[37m Enter \033[47m\033[30m View";
-    std::cout << " \033[44m\033[37m 1 \033[47m\033[30m Search";
-    std::cout << " \033[44m\033[37m 2 \033[47m\033[30m Sort";
-    std::cout << " \033[44m\033[37m 3 \033[47m\033[30m Cut";
-    std::cout << " \033[44m\033[37m 4 \033[47m\033[30m Copy";
-    std::cout << " \033[44m\033[37m 5 \033[47m\033[30m Paste ";
+    std::cout << "\033[44m\033[37m Enter \033[47m\033[30m View ";
+    std::cout << "\033[44m\033[37m 1 \033[47m\033[30m Search ";
+    std::cout << "\033[44m\033[37m 2 \033[47m\033[30m Sort ";
+    std::cout << "\033[44m\033[37m 3 \033[47m\033[30m Cut ";
+    std::cout << "\033[44m\033[37m 4 \033[47m\033[30m Copy ";
+    std::cout << "\033[44m\033[37m 5 \033[47m\033[30m Paste ";
 }

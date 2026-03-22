@@ -13,37 +13,56 @@ MainApp::MainApp() {
     input.clear();
     view.displayFiles(curPath, fileList, selected);
 
+#ifdef _WIN32
+    int const upChar = 72;
+    int const downChar = 80;
+    int const homeChar = 71;
+    int const endChar = 79;
+
+    int const bkspChar = 8;
+    int const enterChar = 13;
+#else
+    int const upChar = 65;
+    int const downChar = 66;
+    int const homeChar = 72;
+    int const endChar = 70;
+
+    int const bkspChar = 127;
+    int const enterChar = 10;
+#endif
+
     do {
         int charInput = input.getch();
         input.clear();
 
 #ifdef _WIN32
-// WINDOWS
         if (charInput == 0 || charInput == 224) { // Special keys
+#else
+        if (charInput == 91) {
+#endif
             charInput = input.getch();
             switch (charInput) {
-                case 72: // Up Arrow
+                case upChar: // Up Arrow
                     selected = ctrl.setSelect(selected - 1, -1, (int)fileList.size());
                     break;
-                case 80: // Down Arrow
+                case downChar: // Down Arrow
                     selected = ctrl.setSelect(selected + 1, -1, (int)fileList.size());
                     break;
-                case 71: // Home
+                case homeChar: // Home
                     selected = ctrl.setSelect(0, -1, (int)fileList.size());
                     break;
-                case 79: // End
+                case endChar: // End
                     selected = ctrl.setSelect((int)fileList.size() - 1, -1, (int)fileList.size());
                     break;
                 default:
                     break;
             }
-        }
-        else {
+        } else {
             switch (charInput) {
-                case 8: // Backspace
+                case bkspChar: // Backspace
                     back();
                     break;
-                case 13: // Enter
+                case enterChar: // Enter
                     enter();
                     break;
                 case 49: { // 1
@@ -62,40 +81,6 @@ MainApp::MainApp() {
                     break;
             }
         }
-#else
-// LINUX
-        if (charInput == 91) {
-            charInput = input.getch();
-            switch (charInput) {
-            case 65: // Up Arrow
-                selected = ctrl.setSelect(selected - 1, -1, fileList.size());
-                break;
-            case 66: // Down Arrow
-                selected = ctrl.setSelect(selected + 1, -1, fileList.size());
-                break;
-            case 72: // Home
-                selected = ctrl.setSelect(0, -1, fileList.size());
-                break;
-            case 70: // End
-                selected = ctrl.setSelect(fileList.size() - 1, -1, fileList.size());
-                break;
-            default:
-                break;
-            }
-        } else {
-            switch (charInput) {
-            case 127: // Backspace
-                back();
-                break;
-            case 10: // Enter
-                enter();
-                break;
-            default:
-                break;
-            }
-        }
-
-#endif
 
         view.displayFiles(curPath, fileList, selected);
 
@@ -127,6 +112,8 @@ void MainApp::enter() {
         back();
         return;
     }
+
+    if (fileList.empty()) return;
 
     isSearch = false;
 

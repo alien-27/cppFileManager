@@ -2,7 +2,8 @@
 
 #include "File.h"
 
-#include<string>
+#include <string>
+#include <vector>
 
 class search {
 private:
