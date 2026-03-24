@@ -9,9 +9,12 @@ class MainView {
 private:
 	std::string setColour(bool selected);
 	void printFooter();
+
+	std::string errMsg;
 public:
 	void displayFiles(std::vector<File> f, int selected);
 	void printHeader(std::string title);
 	void exitMessage();
+	void showError(std::string msg);
 };
 

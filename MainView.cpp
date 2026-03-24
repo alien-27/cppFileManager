@@ -4,8 +4,7 @@ using namespace std::chrono_literals;
 
 void MainView::displayFiles(std::vector<File> f, int selected) {
     // Display exit at the top.
-    setColour(-1 == selected);
-    std::cout << "<< Exit" << std::endl;
+    std::cout << setColour(-1 == selected) << "<< Exit" << std::endl;
 
     if (f.empty()) { // If this folder is empty...
         std::cout << "\033[0mThis folder is empty." << std::endl; // Say it is and don't do the rest of this script
@@ -36,12 +35,10 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
 
     for (int i = startRow; i < startRow + rowsToPrint; i++) {
         if (i < f.size()) {
-            std::string sizeUnit;
+            std::string sizeUnit = "bytes";
 
             if (f[i].getIsFolder()) {
                 sizeUnit = "files";
-            } else {
-                sizeUnit = "bytes";
             }
 
             // Display file details
@@ -69,22 +66,34 @@ std::string MainView::setColour(bool selected) {
 }
 
 void MainView::printHeader(std::string title) {
-    std::cout << "\033[44m\033[37m" << title << std::endl << "\033[0m";
+    if (errMsg != "") {
+        std::cout << "\033[41m\033[30mERROR: " << errMsg << std::endl << "\033[0m";
+        errMsg = "";
+    }
+    else {
+        std::cout << "\033[44m\033[37m" << title << std::endl << "\033[0m";
+    }
 }
 
 void MainView::printFooter() { // TO-DO: replace this
     std::cout << "\033[44m\033[37m Enter \033[47m\033[30m View "
               << "\033[44m\033[37m 1 \033[47m\033[30m Search "
               << "\033[44m\033[37m 2 \033[47m\033[30m Sort "
-              << "\033[44m\033[37m 3 \033[47m\033[30m Cut "
-              << "\033[44m\033[37m 4 \033[47m\033[30m Copy "
-              << "\033[44m\033[37m 5 \033[47m\033[30m Paste "
-              << "\033[44m\033[37m 6 \033[47m\033[30m Rename "
-              << "\033[44m\033[37m 7 \033[47m\033[30m Delete "
-              << "\033[44m\033[37m 8 \033[47m\033[30m Encrypt "
-              << "\033[44m\033[37m 9 \033[47m\033[30m Exit ";
+              << "\033[44m\033[37m 3 \033[47m\033[30m New "
+              << "\033[44m\033[37m 4 \033[47m\033[30m Cut "
+              << "\033[44m\033[37m 5 \033[47m\033[30m Copy "
+              << "\033[44m\033[37m 6 \033[47m\033[30m Paste "
+              << "\033[44m\033[37m 7 \033[47m\033[30m Rename "
+              << "\033[44m\033[37m 8 \033[47m\033[30m Delete "
+              << "\033[44m\033[37m 9 \033[47m\033[30m Encrypt "
+              << "\033[44m\033[37m 0 \033[47m\033[30m Exit ";
 }
 
 void MainView::exitMessage() {
     std::cout << "\033[44m\033[37mExiting Program.\033[0m";
+}
+
+void MainView::showError(std::string msg) {
+    //std::cout << "\033[31mERROR: " << msg << "\033[0m" << std::endl;
+    errMsg = msg;
 }

@@ -30,6 +30,7 @@ class MainApp
 
 		void startSearch();
 		void startSort();
+		void makeNew();
 		void renameFile(std::string path);
 		void deleteFile(std::string path);
 	public:

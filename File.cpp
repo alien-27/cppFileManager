@@ -10,6 +10,13 @@ File::File(fs::directory_entry p) {
 
 	if (p.is_directory()) { // If this is a folder, get the number of items in the folder
 		int fileSize = 0;
+
+		//for (const auto& entry : std::filesystem::recursive_directory_iterator(p)) {
+		//	if (std::filesystem::is_regular_file(entry.path())) {
+		//		fileSize += std::filesystem::file_size(entry.path());
+		//	}
+		//}
+
 		for (const auto& entry : fs::directory_iterator(p.path())) { fileSize++; }
 		this->size = fileSize;
 	}

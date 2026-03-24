@@ -3,7 +3,7 @@
 #include "search.h"
 #include "Sort.h"
 
-//#include <iostream>
+#include <fstream>
 
 MainApp::MainApp() {
     //curPath = "C:\\Users\\2000389\\OneDrive - Dundee and Angus College\\Documents";
@@ -65,21 +65,25 @@ MainApp::MainApp() {
                     startSearch(); break;
                 case 50: // 2 (Sort)
                     startSort(); break;
-                case 51: // 3 (Cut)
+                case 51: // 3 (New)
+                    makeNew();
+                    fileList = ctrl.getFiles(curPath); // Refresh
+                    break;
+                case 52: // 4 (Cut)
                     clip.copy(fileList[selected].getPath(), true); break;
-                case 52: // 4 (Copy)
+                case 53: // 5 (Copy)
                     clip.copy(fileList[selected].getPath(), false); break;
-                case 53: // 5 (Paste)
+                case 54: // 6 (Paste)
                     clip.paste();
                     fileList = ctrl.getFiles(curPath); // Refresh
                     break;
-                case 54: // 6 (Rename)
+                case 55: // 7 (Rename)
                     renameFile(fileList[selected].getPath()); break;
-                case 55: // 7 (Delete)
+                case 56: // 8 (Delete)
                     deleteFile(fileList[selected].getPath()); break;
-                case 56: // 8 (Encrypt / Decrypt)
+                case 57: // 9 (Encrypt / Decrypt)
                     break;
-                case 57: // 9 (Exit)
+                case 48: // 0 (Exit)
                     view.exitMessage();
                     return;
                     break;
@@ -99,7 +103,7 @@ void MainApp::back() {
             fs::path current = fs::current_path();
             fs::current_path(current.parent_path());
         } catch (const fs::filesystem_error& e) {
-            std::cerr << "\033[31mERROR: " << e.what() << std::endl;
+            view.showError(e.what());
         }
 
         curPath = fs::current_path().string();
@@ -126,7 +130,7 @@ void MainApp::enter() {
             fs::path current = fileList[selected].getPath();
             fs::current_path(current);
         } catch (const fs::filesystem_error& e) {
-            std::cerr << "\033[31mERROR: " << e.what() << std::endl;
+            view.showError(e.what());
         }
         curPath = fs::current_path().string();
 
@@ -149,6 +153,52 @@ void MainApp::startSort() {
     fileList = sort.sortList();
 }
 
+void MainApp::makeNew() {
+    do {
+        view.printHeader("Do you want to make a file [1] or a folder [2]?");
+
+        int charInput = input.getch();
+        input.clearScreen();
+
+        switch (charInput) {
+            case 49: { // 1 (File)
+                view.printHeader("Enter a Name (with the extension):");
+                std::string newName = "";
+                std::getline(std::cin, newName);
+
+                if (!fs::exists(newName)) { // If there is no file with this name in the directory...
+                    std::ofstream newFile(newName);
+                }
+                else {
+                    view.showError("File already exists");
+                }
+
+                return;
+                break;
+            }
+            case 50: { // 2 (Folder)
+                view.printHeader("Enter a Name:");
+                std::string newName = "";
+                std::getline(std::cin, newName);
+
+
+                if (!fs::exists(newName)) { // If there is no file with this name in the directory...
+                    fs::create_directory(newName);
+                }
+                else {
+                    view.showError("Folder already exists");
+                }
+                
+                return;
+                break;
+            }
+            default:
+                view.showError("Invalid Input");
+                break;
+        }
+    } while (true);
+}
+
 void MainApp::renameFile(std::string path) {
     if (path == "") return;
     if (!fs::exists(path)) return;
@@ -168,10 +218,10 @@ void MainApp::renameFile(std::string path) {
         try {
             fs::rename(p, newName + extension);
         } catch (const fs::filesystem_error& e) {
-            std::cerr << "\033[31mERROR: " << e.what() << std::endl;
+            view.showError(e.what());
         }
     } else {
-        std::cout << "\033[31mERROR: File already exists" << std::endl;
+        view.showError("File already exists");
     }
 
     fileList = ctrl.getFiles(curPath); // Refresh
@@ -182,7 +232,7 @@ void MainApp::deleteFile(std::string path) {
         fs::path p(path);
         fs::remove_all(p);
     } catch (const fs::filesystem_error& e) {
-        std::cerr << "\033[31mERROR: " << e.what() << std::endl;
+        view.showError(e.what());
     }
 
     fileList = ctrl.getFiles(curPath); // Refresh

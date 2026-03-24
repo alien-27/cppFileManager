@@ -3,28 +3,45 @@
 #include <iostream>
 
 search::search() {
-	std::cout << "enter query: ";
-	std::cin >> query;
+    view.printHeader("Enter your search query:");
+    std::getline(std::cin, query);
+
+    do {
+        int charInput = input.getch();
+
+        switch (charInput) { // Get inputs
+            case 49:
+                return;
+                break;
+            case 50:
+                return;
+                break;
+            case 51:
+                return;
+                break;
+            case 52:
+                return;
+                break;
+            case 53:
+                return;
+                break;
+            case 54: // Confirm
+                return;
+                break;
+            default:
+                break;
+        }
+    } while (true);
 }
 
 std::vector<File> search::doSearch(fs::path p) {
     std::vector<File> newList;
 
-    for (const auto& p : fs::directory_iterator(p)) {
-        if (p.is_directory()) {
-            if (recursive) {
-                std::vector<File> newList2 = doSearch(p.path());
-
-                for (File f : newList2) {
-                    newList.push_back(f);
-                }
-            }
-        }
-
+    for (const auto& p : fs::recursive_directory_iterator(p)) {
         if (p.path().filename().string().find(query) != std::string::npos) {
-            File temp = File(p);
-
             bool push = true;
+
+            File temp = File(p);
 
             if (!temp.getIsFolder()) {
                 if (temp.getSize() < minSize) {
