@@ -2,6 +2,6 @@
 class Input {
 	public:
 		int getch();
-		void clear();
+		void clearScreen();
 };
 

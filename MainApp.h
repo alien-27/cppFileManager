@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "MainView.h"
 #include "MainController.h"
+#include "Clipboard.h"
 
 #include <filesystem>
 #include <fstream>
@@ -22,9 +23,15 @@ class MainApp
 		int selected;
 		std::string curPath = fs::current_path().string();
 		bool isSearch = false; // if the current list of files is a search result
+		Clipboard clip;
 
 		void back();
 		void enter();
+
+		void startSearch();
+		void startSort();
+		void renameFile(std::string path);
+		void deleteFile(std::string path);
 	public:
 		MainApp();
 };

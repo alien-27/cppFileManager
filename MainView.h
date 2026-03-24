@@ -7,9 +7,11 @@
 
 class MainView {
 private:
-	void setColour(bool selected);
+	std::string setColour(bool selected);
 	void printFooter();
 public:
-	void displayFiles(std::string title, std::vector<File> f, int selected);
+	void displayFiles(std::vector<File> f, int selected);
+	void printHeader(std::string title);
+	void exitMessage();
 };
 

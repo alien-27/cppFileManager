@@ -1,5 +1,8 @@
 #include "MainController.h"
 
+#include "search.h"
+#include "Sort.h"
+
 namespace fs = std::filesystem;
 
 std::vector<File> MainController::getFiles(std::string path) {

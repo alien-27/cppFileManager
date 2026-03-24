@@ -2,20 +2,18 @@
 
 using namespace std::chrono_literals;
 
-void MainView::displayFiles(std::string title, std::vector<File> f, int selected) {
-    // Title bar
-    std::cout << "\033[44m\033[37m" << title << std::endl << "\033[0m";
-
+void MainView::displayFiles(std::vector<File> f, int selected) {
     // Display exit at the top.
     setColour(-1 == selected);
     std::cout << "<< Exit" << std::endl;
 
-    if (f.empty()) {
-        std::cout << "\033[0mThis folder is empty." << std::endl;
+    if (f.empty()) { // If this folder is empty...
+        std::cout << "\033[0mThis folder is empty." << std::endl; // Say it is and don't do the rest of this script
         return;
     }
 
-    int longestStr = 0;
+    // Get the width of the lingest filename.
+    int longestStr = 0; 
 
     for (const auto& file : f) {
         if (file.getNameWithExtension().length() > longestStr) {
@@ -23,8 +21,8 @@ void MainView::displayFiles(std::string title, std::vector<File> f, int selected
         }
     }
 
-    int startRow = 0;
-    int rowsToPrint = 27;
+    int startRow = 0; // The top row that is being displayed
+    int rowsToPrint = 27; // How many rows are displayed
 
     if (f.size() > rowsToPrint) {
         if (selected >= rowsToPrint / 2) {
@@ -42,44 +40,51 @@ void MainView::displayFiles(std::string title, std::vector<File> f, int selected
 
             if (f[i].getIsFolder()) {
                 sizeUnit = "files";
-            }
-            else {
+            } else {
                 sizeUnit = "bytes";
             }
 
-            setColour(i == selected);
-            std::cout << "\033[34m" << f[i].getIsFolderStr();
-            setColour(i == selected);
-            std::cout << f[i].getNameWithExtension() << std::string((longestStr - f[i].getNameWithExtension().length()) + 1, ' ') << "\033[34m: "; // Display file details
-            setColour(i == selected);
-            std::cout << f[i].getSize() << " " << sizeUnit << std::string((10 - std::to_string(f[i].getSize()).length()), ' ') << "\033[34m: Modified ";
-            setColour(i == selected);
-            std::cout << /*"Modified " << */f[i].getDateModStr()/* << std::endl*/;
+            // Display file details
+            std::cout << setColour(i == selected) << "\033[34m" << f[i].getIsFolderStr() << setColour(i == selected)
+                      << f[i].getNameWithExtension() << std::string((longestStr - f[i].getNameWithExtension().length()) + 1, ' ')
+                      << "\033[34m: " << setColour(i == selected) << f[i].getSize() << " " << sizeUnit << std::string((10 - std::to_string(f[i].getSize()).length()), ' ')
+                      << "\033[34m: Modified " << setColour(i == selected) << f[i].getDateModStr();
         } else {
             std::cout << std::endl;
         }
     }
-
-    // TO-DO: replace this
+    
     printFooter();
 
-    std::cout << "\033[0m";
+    std::cout << "\033[0m"; // Reset console colours.
 }
 
-void MainView::setColour(bool selected) {
+std::string MainView::setColour(bool selected) {
     if (selected) { // If this is the selected option...
-        std::cout << "\033[47m\033[30m"; // ...Foreground black, background white
+        return "\033[47m\033[30m"; // ...Foreground black, background white
     }
     else {
-        std::cout << "\033[0m"; // ... if it's not, reset colours
+        return "\033[0m"; // ... if it's not, reset console colours
     }
 }
 
-void MainView::printFooter() {
-    std::cout << "\033[44m\033[37m Enter \033[47m\033[30m View ";
-    std::cout << "\033[44m\033[37m 1 \033[47m\033[30m Search ";
-    std::cout << "\033[44m\033[37m 2 \033[47m\033[30m Sort ";
-    std::cout << "\033[44m\033[37m 3 \033[47m\033[30m Cut ";
-    std::cout << "\033[44m\033[37m 4 \033[47m\033[30m Copy ";
-    std::cout << "\033[44m\033[37m 5 \033[47m\033[30m Paste ";
+void MainView::printHeader(std::string title) {
+    std::cout << "\033[44m\033[37m" << title << std::endl << "\033[0m";
+}
+
+void MainView::printFooter() { // TO-DO: replace this
+    std::cout << "\033[44m\033[37m Enter \033[47m\033[30m View "
+              << "\033[44m\033[37m 1 \033[47m\033[30m Search "
+              << "\033[44m\033[37m 2 \033[47m\033[30m Sort "
+              << "\033[44m\033[37m 3 \033[47m\033[30m Cut "
+              << "\033[44m\033[37m 4 \033[47m\033[30m Copy "
+              << "\033[44m\033[37m 5 \033[47m\033[30m Paste "
+              << "\033[44m\033[37m 6 \033[47m\033[30m Rename "
+              << "\033[44m\033[37m 7 \033[47m\033[30m Delete "
+              << "\033[44m\033[37m 8 \033[47m\033[30m Encrypt "
+              << "\033[44m\033[37m 9 \033[47m\033[30m Exit ";
+}
+
+void MainView::exitMessage() {
+    std::cout << "\033[44m\033[37mExiting Program.\033[0m";
 }

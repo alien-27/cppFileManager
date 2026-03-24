@@ -10,8 +10,9 @@ MainApp::MainApp() {
     selected = 0;
     fileList = ctrl.getFiles(curPath);
 
-    input.clear();
-    view.displayFiles(curPath, fileList, selected);
+    input.clearScreen();
+    view.printHeader(curPath);
+    view.displayFiles(fileList, selected);
 
 #ifdef _WIN32
     int const upChar = 72;
@@ -33,7 +34,7 @@ MainApp::MainApp() {
 
     do {
         int charInput = input.getch();
-        input.clear();
+        input.clearScreen();
 
 #ifdef _WIN32
         if (charInput == 0 || charInput == 224) { // Special keys
@@ -43,48 +44,52 @@ MainApp::MainApp() {
             charInput = input.getch();
             switch (charInput) {
                 case upChar: // Up Arrow
-                    selected = ctrl.setSelect(selected - 1, -1, (int)fileList.size());
-                    break;
+                    selected = ctrl.setSelect(selected - 1, -1, (int)fileList.size()); break;
                 case downChar: // Down Arrow
-                    selected = ctrl.setSelect(selected + 1, -1, (int)fileList.size());
-                    break;
+                    selected = ctrl.setSelect(selected + 1, -1, (int)fileList.size()); break;
                 case homeChar: // Home
-                    selected = ctrl.setSelect(0, -1, (int)fileList.size());
-                    break;
+                    selected = ctrl.setSelect(0, -1, (int)fileList.size()); break;
                 case endChar: // End
-                    selected = ctrl.setSelect((int)fileList.size() - 1, -1, (int)fileList.size());
-                    break;
+                    selected = ctrl.setSelect((int)fileList.size() - 1, -1, (int)fileList.size()); break;
                 default:
                     break;
             }
-        } else {
+        }
+        else {
             switch (charInput) {
                 case bkspChar: // Backspace
-                    back();
-                    break;
+                    back(); break;
                 case enterChar: // Enter
-                    enter();
+                    enter(); break;
+                case 49: // 1 (Search)
+                    startSearch(); break;
+                case 50: // 2 (Sort)
+                    startSort(); break;
+                case 51: // 3 (Cut)
+                    clip.copy(fileList[selected].getPath(), true); break;
+                case 52: // 4 (Copy)
+                    clip.copy(fileList[selected].getPath(), false); break;
+                case 53: // 5 (Paste)
+                    clip.paste();
+                    fileList = ctrl.getFiles(curPath); // Refresh
                     break;
-                case 49: { // 1
-                    search Search = search();
-                    fileList = Search.doSearch(fs::current_path());
-
-                    isSearch = true;
+                case 54: // 6 (Rename)
+                    renameFile(fileList[selected].getPath()); break;
+                case 55: // 7 (Delete)
+                    deleteFile(fileList[selected].getPath()); break;
+                case 56: // 8 (Encrypt / Decrypt)
                     break;
-                }
-                case 50: { // 2
-                    Sort sort = Sort(fileList);
-                    fileList = sort.sortList();
+                case 57: // 9 (Exit)
+                    view.exitMessage();
+                    return;
                     break;
-                }
                 default:
                     break;
             }
         }
 
-        view.displayFiles(curPath, fileList, selected);
-
-        //std::cout << charInput;
+        view.printHeader(curPath);
+        view.displayFiles(fileList, selected);
     } while (true);
 }
 
@@ -93,8 +98,7 @@ void MainApp::back() {
         try {
             fs::path current = fs::current_path();
             fs::current_path(current.parent_path());
-        }
-        catch (const fs::filesystem_error& e) {
+        } catch (const fs::filesystem_error& e) {
             std::cerr << "\033[31mERROR: " << e.what() << std::endl;
         }
 
@@ -131,4 +135,55 @@ void MainApp::enter() {
     } else {
 
     }
+}
+
+void MainApp::startSearch() {
+    search Search = search();
+    fileList = Search.doSearch(fs::current_path());
+
+    isSearch = true;
+}
+
+void MainApp::startSort() {
+    Sort sort = Sort(fileList);
+    fileList = sort.sortList();
+}
+
+void MainApp::renameFile(std::string path) {
+    if (path == "") return;
+    if (!fs::exists(path)) return;
+
+    fs::path p(path);
+
+    std::string name = p.filename().stem().string();
+    std::string extension = p.extension().string();
+
+    input.clearScreen();
+    view.printHeader("Rename file: '" + name + "'");
+
+    std::string newName = "";
+    std::getline(std::cin, newName);
+
+    if (!fs::exists(newName + extension)) { // If there is no file with this name in the directory...
+        try {
+            fs::rename(p, newName + extension);
+        } catch (const fs::filesystem_error& e) {
+            std::cerr << "\033[31mERROR: " << e.what() << std::endl;
+        }
+    } else {
+        std::cout << "\033[31mERROR: File already exists" << std::endl;
+    }
+
+    fileList = ctrl.getFiles(curPath); // Refresh
+}
+
+void MainApp::deleteFile(std::string path) {
+    try {
+        fs::path p(path);
+        fs::remove_all(p);
+    } catch (const fs::filesystem_error& e) {
+        std::cerr << "\033[31mERROR: " << e.what() << std::endl;
+    }
+
+    fileList = ctrl.getFiles(curPath); // Refresh
 }

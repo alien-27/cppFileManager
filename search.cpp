@@ -1,8 +1,6 @@
 #include "search.h"
 
-#include <algorithm>
 #include <iostream>
-#include <vector>
 
 search::search() {
 	std::cout << "enter query: ";
@@ -38,7 +36,7 @@ std::vector<File> search::doSearch(fs::path p) {
 
                 // Check if filetype is valid
                 if (!validExtensions.empty()) {
-                    auto ft = std::find(validExtensions.begin(), validExtensions.end(), temp.getExtension());
+                    auto ft = find(validExtensions.begin(), validExtensions.end(), temp.getExtension());
 
                     if (ft == validExtensions.end()) {
                         push = false;

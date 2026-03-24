@@ -13,7 +13,7 @@ int Input::getch() {
 	return _getch();
 }
 
-void Input::clear() {
+void Input::clearScreen() {
 	system("cls");
 }
 
@@ -41,7 +41,7 @@ int Input::getch() {
 	return unix_getch();
 }
 
-void Input::clear() {
+void Input::clearScreen() {
 	system("clear");
 }
 
