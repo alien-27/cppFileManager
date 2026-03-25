@@ -34,34 +34,34 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
     }
 
     for (int i = startRow; i < startRow + rowsToPrint; i++) {
-        if (f.size() > rowsToPrint) {
-            float trueI = (float)(i - startRow) / (rowsToPrint);
-            float barTop = (float)((float)startRow / (float)f.size());
-            float barBottom = (float)((float)(startRow + rowsToPrint) / (float)f.size());
+        if (f.size() > rowsToPrint) { // SCROLL BAR
+            float trueI = (float)(i - startRow) / (rowsToPrint); // What row we are currntly printing.
+            float barTop = (float)((float)startRow / (float)f.size()); // The top of the scroll bar
+            float barBottom = (float)((float)(startRow + rowsToPrint - 1) / (float)f.size()); // The bottom of the scroll bar
 
-            if (trueI >= barTop && trueI <= barBottom) {
-                std::cout << "\033[44m";
+            if (trueI >= barTop && trueI <= barBottom) { // If the current row intersecs the scrollbar
+                std::cout << "\033[44m"; // Set colour to blue
             } else {
-                std::cout << "\033[0m";
+                std::cout << "\033[0m"; // Else, set colour to black.
             }
 
-            std::cout << " \033[0m ";
+            std::cout << " \033[0m "; // Prints the bar, and a space after it.
         }
 
-        if (i < f.size()) {
+        if (i < f.size()) { // If this row shoudn't be empty.
             std::string sizeUnit = "bytes";
 
             if (f[i].getIsFolder()) {
                 sizeUnit = "files";
             }
 
-            // Display file details
+            // Display the file details
             std::cout << setColour(i == selected) << "\033[34m" << f[i].getIsFolderStr() << setColour(i == selected)
                       << f[i].getNameWithExtension() << std::string((longestStr - f[i].getNameWithExtension().length()) + 1, ' ')
                       << "\033[34m: " << setColour(i == selected) << f[i].getSize() << " " << sizeUnit << std::string((10 - std::to_string(f[i].getSize()).length()), ' ')
                       << "\033[34m: Modified " << setColour(i == selected) << f[i].getDateModStr();
         } else {
-            std::cout << std::endl;
+            std::cout << std::endl; // If it is empty, move on to the next row.
         }
     }
     
@@ -108,6 +108,5 @@ void MainView::exitMessage() {
 }
 
 void MainView::showError(std::string msg) {
-    //std::cout << "\033[31mERROR: " << msg << "\033[0m" << std::endl;
     errMsg = msg;
 }
