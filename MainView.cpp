@@ -34,6 +34,20 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
     }
 
     for (int i = startRow; i < startRow + rowsToPrint; i++) {
+        if (f.size() > rowsToPrint) {
+            float trueI = (float)(i - startRow) / (rowsToPrint);
+            float barTop = (float)((float)startRow / (float)f.size());
+            float barBottom = (float)((float)(startRow + rowsToPrint) / (float)f.size());
+
+            if (trueI >= barTop && trueI <= barBottom) {
+                std::cout << "\033[44m";
+            } else {
+                std::cout << "\033[0m";
+            }
+
+            std::cout << " \033[0m ";
+        }
+
         if (i < f.size()) {
             std::string sizeUnit = "bytes";
 
