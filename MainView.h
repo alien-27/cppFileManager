@@ -1,6 +1,7 @@
 #pragma once
 
 #include "File.h"
+#include "Input.h"
 
 #include <iostream>
 #include <map>
@@ -10,6 +11,7 @@ class MainView {
 private:
 	std::string setColour(bool selected);
 	void printFooter(std::map<std::string, std::string> ctrls);
+	Input input;
 
 	std::string errMsg;
 

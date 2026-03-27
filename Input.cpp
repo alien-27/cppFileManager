@@ -19,11 +19,33 @@ void Input::clearScreen() {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPosition);
 }
 
+int Input::consoleWidth() {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    int columns, rows;
+
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    return columns;
+}
+
+int Input::consoleHeight() {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    int columns, rows;
+
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    return rows;
+}
+
 #else
 
 #include <termios.h>
-#include <unistd.h>
 #include <cstdlib>
+
+#include <sys/ioctl.h>
+#include <stdio.h>
+
+#include <unistd.h>
 
 int unix_getch() {
     struct termios oldTermios, newTermios;
@@ -43,6 +65,18 @@ int Input::getch() {
 
 void Input::clearScreen() {
 	system("clear");
+}
+
+int Input::consoleWidth() {
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    return w.ws_col;
+}
+
+int Input::consoleHeight() {
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    return w.ws_row;
 }
 
 #endif
