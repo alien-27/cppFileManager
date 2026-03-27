@@ -8,13 +8,17 @@
 // WINDOWS
 
 #include <conio.h>
+#include <windows.h>
 
 int Input::getch() {
 	return _getch();
 }
 
 void Input::clearScreen() {
-	system("cls");
+    COORD cursorPosition;
+    cursorPosition.X = 0;
+    cursorPosition.Y = 0;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPosition);
 }
 
 #else

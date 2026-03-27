@@ -18,6 +18,12 @@ std::vector<File> search::doSearch(fs::path p) {
 
     do {
         input.clearScreen();
+
+#ifdef _WIN32
+        view.emptyScreen();
+        input.clearScreen();
+#endif
+
         view.printHeader("Search options for: '" + query + "'");
         view.printOptions(minSize, maxSize, validExtensions, recursive);
 

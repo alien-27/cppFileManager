@@ -10,5 +10,6 @@ class searchView {
 
 		int getIntFromInput(std::string msg, int min, int max);
 		std::string getExtensionFromInput();
+		void emptyScreen();
 };
 

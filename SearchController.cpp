@@ -1,5 +1,7 @@
 #include "SearchController.h"
 
+#include <algorithm>
+
 SearchController::SearchController() {
 
 }
@@ -31,7 +33,7 @@ std::vector<File> SearchController::executeSearch(fs::path p, std::string query,
 
                 // Check if filetype is valid
                 if (!validExtensions.empty()) {
-                    auto ft = find(validExtensions.begin(), validExtensions.end(), temp.getExtension());
+                    auto ft = std::find(validExtensions.begin(), validExtensions.end(), temp.getExtension());
 
                     if (ft == validExtensions.end()) {
                         push = false;

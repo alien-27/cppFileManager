@@ -36,12 +36,15 @@ MainApp::MainApp() {
         int charInput = input.getch();
         input.clearScreen();
 
+        bool screenEmpty = true;
+
 #ifdef _WIN32
         if (charInput == 0 || charInput == 224) { // Special keys
 #else
         if (charInput == 91) {
 #endif
             charInput = input.getch();
+            screenEmpty = false;
             switch (charInput) {
                 case upChar: // Up Arrow
                     selected = ctrl.setSelect(selected - 1, -1, (int)fileList.size()); break;
@@ -58,9 +61,11 @@ MainApp::MainApp() {
         else {
             switch (charInput) {
                 case bkspChar: // Backspace
-                    back(); break;
+                    back();
+                    break;
                 case enterChar: // Enter
-                    enter(); break;
+                    enter();
+                    break;
                 case 49: // 1 (Search)
                     startSearch(); break;
                 case 50: // 2 (Sort)
@@ -70,9 +75,9 @@ MainApp::MainApp() {
                     fileList = ctrl.getFiles(curPath); // Refresh
                     break;
                 case 52: // 4 (Cut)
-                    clip.copy(fileList[selected].getPath(), true); break;
+                    clip.copy(fileList[selected].getPath(), true); screenEmpty = false; break;
                 case 53: // 5 (Copy)
-                    clip.copy(fileList[selected].getPath(), false); break;
+                    clip.copy(fileList[selected].getPath(), false); screenEmpty = false; break;
                 case 54: // 6 (Paste)
                     clip.paste();
                     fileList = ctrl.getFiles(curPath); // Refresh
@@ -84,6 +89,10 @@ MainApp::MainApp() {
                 case 57: // 9 (Encrypt / Decrypt)
                     break;
                 case 48: // 0 (Exit)
+#ifdef _WIN32
+                    view.emptyScreen();
+                    input.clearScreen();
+#endif
                     view.exitMessage();
                     return;
                     break;
@@ -91,6 +100,13 @@ MainApp::MainApp() {
                     break;
             }
         }
+
+#ifdef _WIN32
+        if (screenEmpty) {
+            view.emptyScreen();
+            input.clearScreen();
+        }
+#endif
 
         view.printHeader(curPath);
         view.displayFiles(fileList, selected);
@@ -142,6 +158,10 @@ void MainApp::enter() {
 }
 
 void MainApp::startSearch() {
+#ifdef _WIN32
+    view.emptyScreen();
+    input.clearScreen();
+#endif
     search Search = search();
     fileList = Search.doSearch(fs::current_path());
 
@@ -149,16 +169,28 @@ void MainApp::startSearch() {
 }
 
 void MainApp::startSort() {
+#ifdef _WIN32
+    view.emptyScreen();
+    input.clearScreen();
+#endif
     Sort sort = Sort(fileList);
     fileList = sort.sortList();
 }
 
 void MainApp::makeNew() {
     do {
+#ifdef _WIN32
+        view.emptyScreen();
+        input.clearScreen();
+#endif
         view.printHeader("Do you want to make a file [1] or a folder [2]?");
 
         int charInput = input.getch();
         input.clearScreen();
+#ifdef _WIN32
+        view.emptyScreen();
+        input.clearScreen();
+#endif
 
         switch (charInput) {
             case 49: { // 1 (File)
@@ -209,6 +241,10 @@ void MainApp::renameFile(std::string path) {
     std::string extension = p.extension().string();
 
     input.clearScreen();
+#ifdef _WIN32
+    view.emptyScreen();
+    input.clearScreen();
+#endif
     view.printHeader("Rename file: '" + name + "'");
 
     std::string newName = "";

@@ -37,7 +37,7 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
         if (f.size() > rowsToPrint) { // SCROLL BAR
             float trueI = (float)(i - startRow) / (rowsToPrint); // What row we are currntly printing.
             float barTop = (float)((float)startRow / (float)f.size()); // The top of the scroll bar
-            float barBottom = (float)((float)(startRow + rowsToPrint - 1) / (float)f.size()); // The bottom of the scroll bar
+            float barBottom = (float)((float)(startRow + rowsToPrint + 1) / (float)f.size()); // The bottom of the scroll bar
 
             if (trueI >= barTop && trueI <= barBottom) { // If the current row intersecs the scrollbar
                 std::cout << "\033[44m"; // Set colour to blue
@@ -109,4 +109,10 @@ void MainView::exitMessage() {
 
 void MainView::showError(std::string msg) {
     errMsg = msg;
+}
+
+void MainView::emptyScreen() {
+    for (int i = 0; i < 30; i++) {
+        std::cout << std::string(120, ' ');
+    }
 }

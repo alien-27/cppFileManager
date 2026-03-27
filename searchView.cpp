@@ -46,3 +46,9 @@ std::string searchView::getExtensionFromInput() {
 	std::getline(std::cin, ext); // Get input
 	return ext;
 }
+
+void searchView::emptyScreen() {
+	for (int i = 0; i < 30; i++) {
+		std::cout << std::string(120, ' ');
+	}
+}
