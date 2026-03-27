@@ -57,13 +57,17 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
                 sizeUnit = "files";
             }
 
+            int gapWidth = width - (longestStr + 59);
+            if (f.size() <= rowsToPrint) gapWidth += 2;
+            if (gapWidth < 0) gapWidth = 0;
+
             // Display the file details
             std::cout << setColour(i == selected) << "\033[34m" << f[i].getIsFolderStr() << setColour(i == selected)
-                      << f[i].getNameWithExtension() << std::string((longestStr - f[i].getNameWithExtension().length()) + 1, ' ') << std::string(width - (longestStr + 59), ' ')
+                      << f[i].getNameWithExtension() << std::string((longestStr - f[i].getNameWithExtension().length()) + 1, ' ') << std::string(gapWidth, ' ')
                       << "\033[34m: " << setColour(i == selected) << f[i].getSize() << " " << sizeUnit << std::string((10 - std::to_string(f[i].getSize()).length()), ' ')
                       << "\033[34m: Modified " << setColour(i == selected) << f[i].getDateModStr();
         } else {
-            std::cout << "\033[0m" << std::string(width, ' ') << std::endl; // If it is empty, move on to the next row.
+            std::cout /*<< "\033[0m" << std::string(width, ' ')*/ << std::endl; // If it is empty, move on to the next row.
         }
     }
     
@@ -82,9 +86,12 @@ std::string MainView::setColour(bool selected) {
 void MainView::displayDetails(File f) {
     printHeader("Viewing File: " + f.getNameWithExtension());
 
+    std::string path = f.getPath();
+    std::string pathEnd = path.substr(path.length() - (input.consoleWidth() - 35));
+
     std::cout << " :          Name: " << f.getName() << std::endl
               << " :     Extension: " << f.getExtension() << std::endl
-              << " :      Location: " << f.getPath() << std::endl
+              << " :      Location: ..." << pathEnd << std::endl
               << " :          Size: " << f.getSize() << " bytes" << std::endl
               << " : Date Modified: " << f.getDateModStr() << std::endl;
 
@@ -96,21 +103,22 @@ void MainView::displayDetails(File f) {
 }
 
 void MainView::printHeader(std::string title) {
-    std::string printString = title;
+    std::string printStr = title;
+    if (printStr.length() > input.consoleWidth() - 1) printStr = title.substr(title.length() - (input.consoleWidth() - 1));
 
     if (errMsg != "") {
-        printString = "ERROR: " + errMsg;
-        std::cout << "\033[41m\033[30m" << printString;
+        printStr = "ERROR: " + errMsg;
+        std::cout << "\033[41m\033[30m" << printStr;
         errMsg = "";
     }
     else {
-        std::cout << "\033[44m\033[37m" << printString;
+        std::cout << "\033[44m\033[37m" << printStr;
     }
 
     int width = input.consoleWidth();
 
-    if (width > printString.length()) {
-        std::cout << std::string(width - printString.length(), ' ');
+    if (width > printStr.length()) {
+        std::cout << std::string(width - printStr.length(), ' ');
     }
 
     std::cout << std::endl << "\033[0m";
@@ -145,7 +153,7 @@ void MainView::showError(std::string msg) {
 }
 
 void MainView::emptyScreen() {
-    for (int i = 0; i < input.consoleHeight(); i++) {
+    for (int i = 0; i < input.consoleHeight() + 5; i++) {
         std::cout << std::string(120, ' ');
     }
 }
