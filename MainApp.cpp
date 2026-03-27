@@ -114,6 +114,8 @@ MainApp::MainApp() {
 }
 
 void MainApp::back() {
+    std::string prevPath = curPath;
+
     if (!isSearch) {
         try {
             fs::path current = fs::current_path();
@@ -128,7 +130,17 @@ void MainApp::back() {
     isSearch = false;
 
     selected = 0;
-    fileList = ctrl.getFiles(curPath);
+
+    try {
+        fileList = ctrl.getFiles(curPath);
+    } catch (const std::filesystem::filesystem_error& e) {
+        view.showError(e.what());
+
+        // Reset variables
+        curPath = prevPath;
+        fs::path current = curPath;
+        fileList = ctrl.getFiles(curPath);
+    }
 }
 
 void MainApp::enter() {
@@ -141,7 +153,7 @@ void MainApp::enter() {
 
     isSearch = false;
 
-    if (fileList[selected].getIsFolder()) {
+    if (fileList[selected].getIsFolder()) { // OPEN FOLDER
         try {
             fs::path current = fileList[selected].getPath();
             fs::current_path(current);
@@ -152,8 +164,30 @@ void MainApp::enter() {
 
         selected = 0;
         fileList = ctrl.getFiles(curPath);
-    } else {
+    } else { // OPEN FILE
+#ifdef _WIN32
+        int const bkspChar = 8;
+        int const enterChar = 13;
+#else
+        int const bkspChar = 127;
+        int const enterChar = 10;
+#endif
+        do {
+            input.clearScreen();
+#ifdef _WIN32
+            view.emptyScreen();
+            input.clearScreen();
+#endif
 
+            view.displayDetails(fileList[selected]);
+
+            int charInput = input.getch();
+            switch (charInput) {
+                case bkspChar: return; break;
+                case enterChar: break;
+                default: break;
+            }
+        } while (true);
     }
 }
 

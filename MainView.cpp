@@ -58,16 +58,14 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
             // Display the file details
             std::cout << setColour(i == selected) << "\033[34m" << f[i].getIsFolderStr() << setColour(i == selected)
                       << f[i].getNameWithExtension() << std::string((longestStr - f[i].getNameWithExtension().length()) + 1, ' ')
-                      << "\033[34m: " << setColour(i == selected) << f[i].getSize() << " " << sizeUnit << std::string((10 - std::to_string(f[i].getSize()).length()), ' ')
+                      << "\033[34m: " << setColour(i == selected) << f[i].getSize() << " " << sizeUnit << std::string((11 - std::to_string(f[i].getSize()).length()), ' ')
                       << "\033[34m: Modified " << setColour(i == selected) << f[i].getDateModStr();
         } else {
             std::cout << std::endl; // If it is empty, move on to the next row.
         }
     }
     
-    printFooter();
-
-    std::cout << "\033[0m"; // Reset console colours.
+    printFooter(folderCtrls);
 }
 
 std::string MainView::setColour(bool selected) {
@@ -77,6 +75,22 @@ std::string MainView::setColour(bool selected) {
     else {
         return "\033[0m"; // ... if it's not, reset console colours
     }
+}
+
+void MainView::displayDetails(File f) {
+    printHeader("Viewing File: " + f.getNameWithExtension());
+
+    std::cout << " :          Name: " << f.getName() << std::endl
+              << " :     Extension: " << f.getExtension() << std::endl
+              << " :      Location: " << f.getPath() << std::endl
+              << " :          Size: " << f.getSize() << " bytes" << std::endl
+              << " : Date Modified: " << f.getDateModStr() << std::endl;
+
+    for (int i = 0; i < 21; i++) {
+        std::cout << std::endl;
+    }
+
+    printFooter(fileCtrls);
 }
 
 void MainView::printHeader(std::string title) {
@@ -89,18 +103,14 @@ void MainView::printHeader(std::string title) {
     }
 }
 
-void MainView::printFooter() { // TO-DO: replace this
-    std::cout << "\033[44m\033[37m Enter \033[47m\033[30m View "
-              << "\033[44m\033[37m 1 \033[47m\033[30m Search "
-              << "\033[44m\033[37m 2 \033[47m\033[30m Sort "
-              << "\033[44m\033[37m 3 \033[47m\033[30m New "
-              << "\033[44m\033[37m 4 \033[47m\033[30m Cut "
-              << "\033[44m\033[37m 5 \033[47m\033[30m Copy "
-              << "\033[44m\033[37m 6 \033[47m\033[30m Paste "
-              << "\033[44m\033[37m 7 \033[47m\033[30m Rename "
-              << "\033[44m\033[37m 8 \033[47m\033[30m Delete "
-              << "\033[44m\033[37m 9 \033[47m\033[30m Encrypt "
-              << "\033[44m\033[37m 0 \033[47m\033[30m Exit ";
+void MainView::printFooter(std::map<std::string, std::string> ctrls) { // TO-DO: replace this
+    // Iterate through map
+    std::map<std::string, std::string>::iterator it;
+    for (auto it = ctrls.begin(); it != ctrls.end(); it++) {
+        std::cout << "\033[44m\033[37m " << it->first << " \033[47m\033[30m " << it->second << " ";
+    }
+
+    std::cout << "\033[0m"; // Reset console colours.
 }
 
 void MainView::exitMessage() {
@@ -112,7 +122,7 @@ void MainView::showError(std::string msg) {
 }
 
 void MainView::emptyScreen() {
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 50; i++) {
         std::cout << std::string(120, ' ');
     }
 }

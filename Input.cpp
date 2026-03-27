@@ -5,8 +5,6 @@
 
 #ifdef _WIN32
 
-// WINDOWS
-
 #include <conio.h>
 #include <windows.h>
 
@@ -22,8 +20,6 @@ void Input::clearScreen() {
 }
 
 #else
-
-// MAC & LINUX
 
 #include <termios.h>
 #include <unistd.h>

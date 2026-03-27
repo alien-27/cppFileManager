@@ -48,7 +48,7 @@ std::string searchView::getExtensionFromInput() {
 }
 
 void searchView::emptyScreen() {
-	for (int i = 0; i < 30; i++) {
+	for (int i = 0; i < 50; i++) {
 		std::cout << std::string(120, ' ');
 	}
 }

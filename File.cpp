@@ -4,24 +4,34 @@ File::File(fs::directory_entry p) {
 	this->name = p.path().filename().stem().string();
 	this->path = p.path().string();
 
-	auto ftime = fs::last_write_time(p.path()); // Get the date modified
-	auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now());
-	this->dateMod = std::chrono::system_clock::to_time_t(sctp);
-
-	if (p.is_directory()) { // If this is a folder, get the number of items in the folder
-		int fileSize = 0;
-
-		//for (const auto& entry : std::filesystem::recursive_directory_iterator(p)) {
-		//	if (std::filesystem::is_regular_file(entry.path())) {
-		//		fileSize += std::filesystem::file_size(entry.path());
-		//	}
-		//}
-
-		for (const auto& entry : fs::directory_iterator(p.path())) { fileSize++; }
-		this->size = fileSize;
+	try {
+		auto ftime = fs::last_write_time(p.path()); // Get the date modified
+		auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now());
+		this->dateMod = std::chrono::system_clock::to_time_t(sctp);
+	} catch (const std::filesystem::filesystem_error& e) {
+		//view.showError(e.what());
+		auto now = std::chrono::system_clock::now();
+		this->dateMod = std::chrono::system_clock::to_time_t(now);
 	}
-	else { // else, get the files size
-		this->size = (int)p.file_size();
+
+	try {
+		if (p.is_directory()) { // If this is a folder, get the number of items in the folder
+			int fileSize = 0;
+
+			for (const auto& entry : fs::directory_iterator(p.path())) { fileSize++; }
+			this->size = fileSize;
+		}
+		else { // else, get the files size
+			int fileSize = (int)p.file_size();
+			if (fileSize < 0) {
+				this->size = 0;
+			} else {
+				this->size = fileSize;
+			}
+		}
+	} catch (const std::filesystem::filesystem_error& e) {
+		//view.showError(e.what());
+		this->size = 0;
 	}
 
 	this->isFolder = p.is_directory();
