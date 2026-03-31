@@ -39,6 +39,6 @@ public:
 	void exitMessage();
 	void showError(std::string msg);
 	void emptyScreen();
-	void displayDetails(File f);
+	void displayDetails(File& f);
 };
 

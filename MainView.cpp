@@ -1,4 +1,5 @@
 #include "MainView.h"
+#include "TextFile.h"
 
 using namespace std::chrono_literals;
 
@@ -83,23 +84,40 @@ std::string MainView::setColour(bool selected) {
     }
 }
 
-void MainView::displayDetails(File f) {
+void MainView::displayDetails(File& f) {
     printHeader("Viewing File: " + f.getNameWithExtension());
 
     std::string pathEnd = f.getPath();
-    if (pathEnd.length() > input.consoleWidth() - 35) pathEnd = "..." + pathEnd.substr(pathEnd.length() - (input.consoleWidth() - 35));
+    if (pathEnd.length() > input.consoleWidth() - 30) pathEnd = "..." + pathEnd.substr(pathEnd.length() - (input.consoleWidth() - 30));
 
-    std::cout << " :          Name: " << f.getName() << std::endl
-              << " :          Type: " << f.getType() << std::endl
-              << " :     Extension: " << f.getExtension() << std::endl
-              << " :      Location: " << pathEnd << std::endl
-              << " :          Size: " << f.getSize() << " bytes" << std::endl
-              << " : Date Modified: " << f.getDateModStr() << std::endl;
+    int filledRows = 9;
 
-    for (int i = 0; i < input.consoleHeight() - 9; i++) {
-        std::cout << std::endl;
+    std::cout << "  ____   :          Name: " << f.getName() << std::endl
+              << " | __|_\\ :          Type: " << f.getType() << std::endl
+              << " | ___ | :     Extension: " << f.getExtension() << std::endl
+              << " | ___ | :      Location: " << pathEnd << std::endl
+              << " |_____| :          Size: " << f.getSize() << " bytes" << std::endl
+              << "         : Date Modified: " << f.getDateModStr()
+              << "\033[44m\033[37m" << std::string(input.consoleWidth(), ' ') << "\033[0m" << std::endl;
+
+    if (f.getType() == "Text" || f.getType() == "Code") {
+        // Cast the generic File reference to a TextFile reference
+        TextFile& tf = static_cast<TextFile&>(f);
+        std::cout << "Lines: " << tf.getLines() << std::endl;
+
+        //std::cout << "Lines: " << f.getLines() << std::endl;
+        filledRows += 1;
+    } else if (f.getType() == "Audio") {
+        std::cout << "   Duration: 0 seconds" << std::endl
+                  << "Sample Rate: 0 kHz" << std::endl
+                  << "   Channels: Mono" << std::endl;
+        filledRows += 3;
     }
 
+    for (int i = 0; i < input.consoleHeight() - filledRows; i++) {
+        std::cout << std::endl;
+    }
+    
     printFooter(fileCtrls);
 }
 

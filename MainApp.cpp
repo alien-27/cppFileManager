@@ -3,6 +3,8 @@
 #include "search.h"
 #include "Sort.h"
 
+#include "TextFile.h"
+
 #include <fstream>
 
 MainApp::MainApp() {
@@ -172,6 +174,15 @@ void MainApp::enter() {
         int const bkspChar = 127;
         int const enterChar = 10;
 #endif
+        //File& curFile = fileList[selected];
+        //fs::path current = fileList[selected].getPath();
+        //fs::directory_entry entry{ current };
+
+        //if (curFile.getType() == "Text" || curFile.getType() == "Code") {
+        //    TextFile newFile = TextFile(entry);
+        //    curFile = newFile;
+        //}
+
         do {
             input.clearScreen();
 #ifdef _WIN32
