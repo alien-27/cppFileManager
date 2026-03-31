@@ -1,5 +1,9 @@
 ﻿#include "File.h"
 
+#include <algorithm>
+#include <cctype>
+#include <unordered_set>
+
 File::File(fs::directory_entry p) {
 	this->name = p.path().filename().stem().string();
 	this->path = p.path().string();
@@ -30,7 +34,7 @@ File::File(fs::directory_entry p) {
 			}
 		}
 	} catch (const std::filesystem::filesystem_error& e) {
-		//view.showError(e.what());
+		//return e.what();
 		this->size = 0;
 	}
 
@@ -38,13 +42,51 @@ File::File(fs::directory_entry p) {
 
 	if (isFolder) {
 		this->extension = "/";
+		this->type = "Folder";
 	} else {
-		this->extension = p.path().extension().string();
+		std::string ext = p.path().extension().string();
+		std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); });
+
+		this->extension = ext;
+
+		// get file type
+		std::unordered_set<std::string> text = { ".txt", ".text", ".md", ".csv", ".xml", ".json", ".log" };
+		std::unordered_set<std::string> document = { ".pdf", ".docx", ".pptx", ".xlsx", ".odt", ".pages" };
+		std::unordered_set<std::string> code = { ".sln", ".cpp", ".cs", ".css", ".h", ".c", ".py", ".html", ".htm", ".css", ".js", ".php", ".lua", ".java", ".sql", ".rb", ".rs", ".go", ".sh", ".ps1", ".yml", ".yaml", ".bat"};
+		std::unordered_set<std::string> graphic = { ".png", ".jpeg", ".jpg", ".webp", ".svg", ".eps", ".gif", ".tiff", ".mpeg", ".bmp", ".raw", ".ai", ".psd", ".xcf", ".kra", ".indd", ".heic"};
+		std::unordered_set<std::string> model = { ".obj", ".fbx", ".stl", ".gltf", ".glb", ".usdz", ".step", ".stp", ".blend", ".3mf", ".max", ".sldprt", ".dwg"};
+		std::unordered_set<std::string> video = { ".mp4", ".avi", ".mov", ".mkv", ".wmv", ".webm"};
+		std::unordered_set<std::string> audio = { ".mp3", ".wav", ".acc", ".ogg", ".flac", ".aac", ".m4a", ".aiff", ".alac", ".wma"};
+		std::unordered_set<std::string> archive = { ".zip", ".rar", ".7z", ".tar", ".gzip"};
+		std::unordered_set<std::string> application = { ".exe", ".app", ".apk", ".msi"};
+
+		if (text.count(extension)) {
+			this->type = "Text";
+		} else if (document.count(extension)) {
+			this->type = "Document";
+		} else if (code.count(extension)) {
+			this->type = "Code";
+		} else if (graphic.count(extension)) {
+			this->type = "Graphic";
+		} else if (model.count(extension)) {
+			this->type = "Model";
+		} else if (video.count(extension)) {
+			this->type = "Video";
+		} else if (audio.count(extension)) {
+			this->type = "Audio";
+		} else if (archive.count(extension)) {
+			this->type = "Archive";
+		} else if (application.count(extension)) {
+			this->type = "Application";
+		} else {
+			this->type = "File";
+		}
 	}
 }
 
 std::string File::getName() const { return name; }
 std::string File::getPath() const { return path; }
+std::string File::getType() const { return type; }
 std::string File::getExtension() const { return extension; }
 int File::getSize() const { return size; }
 std::time_t File::getDateMod() const { return dateMod; };

@@ -12,6 +12,7 @@ class File {
 	private:
 		std::string name;
 		std::string path;
+		std::string type;
 		std::string extension;
 		int size;
 		std::time_t dateMod;
@@ -21,6 +22,7 @@ class File {
 
 		std::string getName() const;
 		std::string getPath() const;
+		std::string getType() const;
 		std::string getExtension() const;
 		int getSize() const;
 		std::time_t getDateMod() const;

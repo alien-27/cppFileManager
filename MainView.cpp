@@ -13,8 +13,8 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
         return;
     }
 
-    // Get the width of the lingest filename.
-    int longestStr = 0; 
+    // Get the width of the longest filename.
+    int longestStr = 0;
 
     for (const auto& file : f) {
         if (file.getNameWithExtension().length() > longestStr) {
@@ -86,16 +86,17 @@ std::string MainView::setColour(bool selected) {
 void MainView::displayDetails(File f) {
     printHeader("Viewing File: " + f.getNameWithExtension());
 
-    std::string path = f.getPath();
-    std::string pathEnd = path.substr(path.length() - (input.consoleWidth() - 35));
+    std::string pathEnd = f.getPath();
+    if (pathEnd.length() > input.consoleWidth() - 35) pathEnd = "..." + pathEnd.substr(pathEnd.length() - (input.consoleWidth() - 35));
 
     std::cout << " :          Name: " << f.getName() << std::endl
+              << " :          Type: " << f.getType() << std::endl
               << " :     Extension: " << f.getExtension() << std::endl
-              << " :      Location: ..." << pathEnd << std::endl
+              << " :      Location: " << pathEnd << std::endl
               << " :          Size: " << f.getSize() << " bytes" << std::endl
               << " : Date Modified: " << f.getDateModStr() << std::endl;
 
-    for (int i = 0; i < input.consoleHeight() - 8; i++) {
+    for (int i = 0; i < input.consoleHeight() - 9; i++) {
         std::cout << std::endl;
     }
 
@@ -153,7 +154,7 @@ void MainView::showError(std::string msg) {
 }
 
 void MainView::emptyScreen() {
-    for (int i = 0; i < input.consoleHeight() + 5; i++) {
+    for (int i = 0; i < input.consoleHeight(); i++) {
         std::cout << std::string(120, ' ');
     }
 }

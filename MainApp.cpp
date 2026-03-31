@@ -183,7 +183,13 @@ void MainApp::enter() {
 
             int charInput = input.getch();
             switch (charInput) {
-                case bkspChar: return; break;
+                case bkspChar:
+                    input.clearScreen();
+#ifdef _WIN32
+                    view.emptyScreen();
+                    input.clearScreen();
+#endif
+                    return; break;
                 case enterChar: break;
                 default: break;
             }
