@@ -15,6 +15,6 @@ class Sort
 		void sortBySize(std::string order);
 	public:
 		Sort(std::vector<File> fv);
-		std::vector<File> sortList();
+		std::vector<File> sortList(std::string ord);
 };
 

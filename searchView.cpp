@@ -6,17 +6,17 @@ void searchView::printHeader(std::string title) {
     std::cout << "\033[44m\033[37m" << title << std::endl << "\033[0m";
 }
 
-void searchView::printOptions(int minSize, int maxSize, std::vector<std::string> validExtensions, bool recursive) {
+void searchView::printOptions(int minSize, int maxSize, std::vector<std::string> validExtensions, std::vector<std::string> validTypes, bool recursive) {
     std::string extStr = "";
+    for (std::string s : validExtensions) { extStr += s + ", "; }
 
-    for (std::string s : validExtensions) {
-        extStr += s + ", ";
-    }
+	std::string typStr = "";
+	for (std::string s : validTypes) { typStr += s + ", "; }
 
     std::cout << "[1]     Set Minimum Size (" << minSize << " bytes)" << std::endl
               << "[2]     Set Maximum Size (" << maxSize << " bytes)" << std::endl
               << "[3]     Search for specific file extensions [" << extStr << "]" << std::endl
-              << "[4]     Search for specific file types [adding later]" << std::endl
+              << "[4]     Search for specific file types [" << typStr << "]" << std::endl
               << "[5]     Toggle Recursive Search (" << (recursive ? "TRUE" : "FALSE") << ")" << std::endl
               << "[Enter] Confirm" << std::endl;
 }
@@ -40,11 +40,14 @@ int searchView::getIntFromInput(std::string msg, int min, int max) {
 	} while (true);
 }
 
-std::string searchView::getExtensionFromInput() {
-	printHeader("Enter an extension you want to search for (formatted '.txt'):");
+std::string searchView::getInput() {
 	std::string ext = "";
-	std::getline(std::cin, ext); // Get input
+	std::getline(std::cin, ext);
 	return ext;
+}
+
+void searchView::showError(std::string e) {
+	std::cerr << "\033[31mERROR: " << e << "\033[0m" << std::endl;
 }
 
 void searchView::emptyScreen() {

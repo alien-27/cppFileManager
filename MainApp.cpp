@@ -174,14 +174,6 @@ void MainApp::enter() {
         int const bkspChar = 127;
         int const enterChar = 10;
 #endif
-        //File& curFile = fileList[selected];
-        //fs::path current = fileList[selected].getPath();
-        //fs::directory_entry entry{ current };
-
-        //if (curFile.getType() == "Text" || curFile.getType() == "Code") {
-        //    TextFile newFile = TextFile(entry);
-        //    curFile = newFile;
-        //}
 
         do {
             input.clearScreen();
@@ -225,7 +217,23 @@ void MainApp::startSort() {
     input.clearScreen();
 #endif
     Sort sort = Sort(fileList);
-    fileList = sort.sortList();
+
+    view.printHeader("Sort Files:");
+
+    do {
+        int charInput = input.getch();
+        input.clearScreen();
+#ifdef _WIN32
+        view.emptyScreen();
+        input.clearScreen();
+#endif
+
+        switch (charInput) {
+            case 49: fileList = sort.sortList("ASC"); return; break;
+            case 50: fileList = sort.sortList("DESC"); return; break;
+            default: view.showError("Invalid Input"); break;
+        }
+    } while (true);
 }
 
 void MainApp::makeNew() {
@@ -275,9 +283,7 @@ void MainApp::makeNew() {
                 return;
                 break;
             }
-            default:
-                view.showError("Invalid Input");
-                break;
+            default: view.showError("Invalid Input"); break;
         }
     } while (true);
 }
