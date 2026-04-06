@@ -4,8 +4,16 @@ Sort::Sort(std::vector<File> fv) {
 	fileList = fv;
 }
 
-std::vector<File> Sort::sortList(std::string ord) {
-    sortBySize(ord);
+std::vector<File> Sort::sortList(std::string value, std::string ord) {
+    if (value == "Name") {
+        sortByName(ord);
+    } else if (value == "Size") {
+        sortBySize(ord);
+    } else if (value == "Date") {
+        sortByDate(ord);
+    } else if (value == "Extension") {
+        sortByExtension(ord);
+    }
 
     return fileList;
 }
@@ -30,20 +38,20 @@ void Sort::sortByDate(std::string order) {
     }
 }
 
-void Sort::sortByType(std::string order) {
+void Sort::sortBySize(std::string order) {
     for (int i = 0; i < fileList.size() - 1; i++) {
         for (int j = 0; j < fileList.size() - 1 - i; j++) {
-            if ((fileList[j].getExtension() > fileList[j + 1].getExtension() && order == "ASC") || (fileList[j].getExtension() < fileList[j + 1].getExtension() && order == "DESC")) {
+            if ((fileList[j].getSize() > fileList[j + 1].getSize() && order == "ASC") || (fileList[j].getSize() < fileList[j + 1].getSize() && order == "DESC")) {
                 std::swap(fileList[j], fileList[j + 1]);
             }
         }
     }
 }
 
-void Sort::sortBySize(std::string order) {
+void Sort::sortByExtension(std::string order) {
     for (int i = 0; i < fileList.size() - 1; i++) {
         for (int j = 0; j < fileList.size() - 1 - i; j++) {
-            if ((fileList[j].getSize() > fileList[j + 1].getSize() && order == "ASC") || (fileList[j].getSize() < fileList[j + 1].getSize() && order == "DESC")) {
+            if ((fileList[j].getExtension() > fileList[j + 1].getExtension() && order == "ASC") || (fileList[j].getExtension() < fileList[j + 1].getExtension() && order == "DESC")) {
                 std::swap(fileList[j], fileList[j + 1]);
             }
         }

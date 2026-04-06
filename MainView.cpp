@@ -84,6 +84,17 @@ std::string MainView::setColour(bool selected) {
     }
 }
 
+void MainView::printSortOptions() {
+    std::cout << "[1] Sort By Name (Ascending)" << std::endl
+              << "[2] Sort By Name (Descending)" << std::endl
+              << "[3] Sort By Size (Ascending)" << std::endl
+              << "[4] Sort By Size (Descending)" << std::endl
+              << "[5] Sort By Extension (Ascending)" << std::endl
+              << "[6] Sort By Extension (Descending)" << std::endl
+              << "[7] Sort By Date (Ascending)" << std::endl
+              << "[8] Sort By Date (Descending)" << std::endl;
+}
+
 void MainView::displayDetails(File& f) {
     printHeader("Viewing File: " + f.getNameWithExtension());
 

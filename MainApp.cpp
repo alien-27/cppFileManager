@@ -218,9 +218,10 @@ void MainApp::startSort() {
 #endif
     Sort sort = Sort(fileList);
 
-    view.printHeader("Sort Files:");
-
     do {
+        view.printHeader("Sort Files:");
+        view.printSortOptions();
+
         int charInput = input.getch();
         input.clearScreen();
 #ifdef _WIN32
@@ -229,8 +230,14 @@ void MainApp::startSort() {
 #endif
 
         switch (charInput) {
-            case 49: fileList = sort.sortList("ASC"); return; break;
-            case 50: fileList = sort.sortList("DESC"); return; break;
+            case 49: fileList = sort.sortList("Name", "ASC"); return; break;
+            case 50: fileList = sort.sortList("Name", "DESC"); return; break;
+            case 51: fileList = sort.sortList("Size", "ASC"); return; break;
+            case 52: fileList = sort.sortList("Size", "DESC"); return; break;
+            case 53: fileList = sort.sortList("Extension", "ASC"); return; break;
+            case 54: fileList = sort.sortList("Extension", "DESC"); return; break;
+            case 55: fileList = sort.sortList("Date", "ASC"); return; break;
+            case 56: fileList = sort.sortList("Date", "DESC"); return; break;
             default: view.showError("Invalid Input"); break;
         }
     } while (true);

@@ -11,10 +11,10 @@ class Sort
 
 		void sortByName(std::string order);
 		void sortByDate(std::string order);
-		void sortByType(std::string order);
 		void sortBySize(std::string order);
+		void sortByExtension(std::string order);
 	public:
 		Sort(std::vector<File> fv);
-		std::vector<File> sortList(std::string ord);
+		std::vector<File> sortList(std::string value, std::string ord);
 };
 
