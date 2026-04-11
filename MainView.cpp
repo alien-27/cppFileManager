@@ -1,4 +1,6 @@
 #include "MainView.h"
+
+#include "AudioFile.h"
 #include "TextFile.h"
 
 using namespace std::chrono_literals;
@@ -119,7 +121,8 @@ void MainView::displayDetails(File& f) {
         //std::cout << "Lines: " << f.getLines() << std::endl;
         filledRows += 1;
     } else if (f.getType() == "Audio") {
-        std::cout << "   Duration: 0 seconds" << std::endl
+        AudioFile& af = static_cast<AudioFile&>(f);
+        std::cout << "   Duration: " << af.getLength() << " seconds" << std::endl
                   << "Sample Rate: 0 kHz" << std::endl
                   << "   Channels: Mono" << std::endl;
         filledRows += 3;

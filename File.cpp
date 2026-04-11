@@ -100,9 +100,8 @@ std::string File::getNameWithExtension() const {
 std::string File::getIsFolderStr() const {
 	if (isFolder) {
 		return "|- ";
-	} else {
-		return "|  ";
 	}
+	return "|  ";
 }
 
 std::string File::getDateModStr() const {

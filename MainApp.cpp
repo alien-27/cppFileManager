@@ -2,6 +2,7 @@
 
 #include "search.h"
 #include "Sort.h"
+#include "Encrypt.h"
 
 #include "TextFile.h"
 
@@ -40,8 +41,10 @@ MainApp::MainApp() {
 
         bool screenEmpty = true;
 
+        // Some keyboard inputs are made up of two characters. What the if statement below does is check
+        // if the first one is a special key, and gets the input from the second one.
 #ifdef _WIN32
-        if (charInput == 0 || charInput == 224) { // Special keys
+        if (charInput == 0 || charInput == 224) {
 #else
         if (charInput == 91) {
 #endif
@@ -56,18 +59,15 @@ MainApp::MainApp() {
                     selected = ctrl.setSelect(0, -1, (int)fileList.size()); break;
                 case endChar: // End
                     selected = ctrl.setSelect((int)fileList.size() - 1, -1, (int)fileList.size()); break;
-                default:
-                    break;
+                default: break;
             }
         }
         else {
             switch (charInput) {
                 case bkspChar: // Backspace
-                    back();
-                    break;
+                    back(); break;
                 case enterChar: // Enter
-                    enter();
-                    break;
+                    enter(); break;
                 case 49: // 1 (Search)
                     startSearch(); break;
                 case 50: // 2 (Sort)
@@ -89,15 +89,11 @@ MainApp::MainApp() {
                 case 56: // 8 (Delete)
                     deleteFile(fileList[selected].getPath()); break;
                 case 57: // 9 (Encrypt / Decrypt)
-                    break;
+                    encrypt(fileList[selected]); break;
                 case 48: // 0 (Exit)
-#ifdef _WIN32
-                    view.emptyScreen();
-                    input.clearScreen();
-#endif
+                    clearScreen();
                     view.exitMessage();
                     return;
-                    break;
                 default:
                     break;
             }
@@ -116,9 +112,9 @@ MainApp::MainApp() {
 }
 
 void MainApp::back() {
-    std::string prevPath = curPath;
+    std::string prevPath = curPath; // Set current path to this incase something goes wrong
 
-    if (!isSearch) {
+    if (!isSearch) { // Only go into the containing folder if the user hasn't searched for something.
         try {
             fs::path current = fs::current_path();
             fs::current_path(current.parent_path());
@@ -129,8 +125,8 @@ void MainApp::back() {
         curPath = fs::current_path().string();
     }
 
+    // Reset variables
     isSearch = false;
-
     selected = 0;
 
     try {
@@ -150,7 +146,6 @@ void MainApp::enter() {
         back();
         return;
     }
-
     if (fileList.empty()) return;
 
     isSearch = false;
@@ -165,7 +160,7 @@ void MainApp::enter() {
         curPath = fs::current_path().string();
 
         selected = 0;
-        fileList = ctrl.getFiles(curPath);
+        fileList = ctrl.getFiles(curPath); // Get the list of files
     } else { // OPEN FILE
 #ifdef _WIN32
         int const bkspChar = 8;
@@ -175,25 +170,19 @@ void MainApp::enter() {
         int const enterChar = 10;
 #endif
 
+        // This dipslays the files details.
         do {
-            input.clearScreen();
-#ifdef _WIN32
-            view.emptyScreen();
-            input.clearScreen();
-#endif
-
+            clearScreen();
             view.displayDetails(fileList[selected]);
 
             int charInput = input.getch();
             switch (charInput) {
-                case bkspChar:
-                    input.clearScreen();
-#ifdef _WIN32
-                    view.emptyScreen();
-                    input.clearScreen();
-#endif
-                    return; break;
-                case enterChar: break;
+                case bkspChar: clearScreen(); return; break; // Exit
+                case enterChar: // Enter text editor (on text files only)
+                    //if (fileList[selected].getType() == "Text" || fileList[selected].getType() == "Code") {
+                        
+                    //}
+                    break;
                 default: break;
             }
         } while (true);
@@ -201,10 +190,7 @@ void MainApp::enter() {
 }
 
 void MainApp::startSearch() {
-#ifdef _WIN32
-    view.emptyScreen();
-    input.clearScreen();
-#endif
+    clearScreen();
     search Search = search();
     fileList = Search.doSearch(fs::current_path());
 
@@ -212,10 +198,7 @@ void MainApp::startSearch() {
 }
 
 void MainApp::startSort() {
-#ifdef _WIN32
-    view.emptyScreen();
-    input.clearScreen();
-#endif
+    clearScreen();
     Sort sort = Sort(fileList);
 
     do {
@@ -223,11 +206,7 @@ void MainApp::startSort() {
         view.printSortOptions();
 
         int charInput = input.getch();
-        input.clearScreen();
-#ifdef _WIN32
-        view.emptyScreen();
-        input.clearScreen();
-#endif
+        clearScreen();
 
         switch (charInput) {
             case 49: fileList = sort.sortList("Name", "ASC"); return; break;
@@ -245,18 +224,11 @@ void MainApp::startSort() {
 
 void MainApp::makeNew() {
     do {
-#ifdef _WIN32
-        view.emptyScreen();
-        input.clearScreen();
-#endif
+        clearScreen();
         view.printHeader("Do you want to make a file [1] or a folder [2]?");
 
         int charInput = input.getch();
-        input.clearScreen();
-#ifdef _WIN32
-        view.emptyScreen();
-        input.clearScreen();
-#endif
+        clearScreen();
 
         switch (charInput) {
             case 49: { // 1 (File)
@@ -266,29 +238,24 @@ void MainApp::makeNew() {
 
                 if (!fs::exists(newName)) { // If there is no file with this name in the directory...
                     std::ofstream newFile(newName);
-                }
-                else {
+                } else {
                     view.showError("File already exists");
                 }
 
                 return;
-                break;
             }
             case 50: { // 2 (Folder)
                 view.printHeader("Enter a Name:");
                 std::string newName = "";
                 std::getline(std::cin, newName);
 
-
                 if (!fs::exists(newName)) { // If there is no file with this name in the directory...
                     fs::create_directory(newName);
-                }
-                else {
+                } else {
                     view.showError("Folder already exists");
                 }
                 
                 return;
-                break;
             }
             default: view.showError("Invalid Input"); break;
         }
@@ -304,18 +271,14 @@ void MainApp::renameFile(std::string path) {
     std::string name = p.filename().stem().string();
     std::string extension = p.extension().string();
 
-    input.clearScreen();
-#ifdef _WIN32
-    view.emptyScreen();
-    input.clearScreen();
-#endif
+    clearScreen();
     view.printHeader("Rename file: '" + name + "'");
 
     std::string newName = "";
     std::getline(std::cin, newName);
 
     if (!fs::exists(newName + extension)) { // If there is no file with this name in the directory...
-        try {
+        try { // Try and rename the file.
             fs::rename(p, newName + extension);
         } catch (const fs::filesystem_error& e) {
             view.showError(e.what());
@@ -336,4 +299,56 @@ void MainApp::deleteFile(std::string path) {
     }
 
     fileList = ctrl.getFiles(curPath); // Refresh
+}
+
+void MainApp::encrypt(File f) {
+    if (f.getType() != "Text" && f.getType() != "Code" && f.getExtension() != ".encr") { // If this is not a text file, stop.
+        view.showError("Cannot encrypt non text files"); return;
+    }
+
+    std::string newFileName = "";
+    std::string headerText = "";
+
+    if (f.getExtension() == ".encr") { // File is encrypted, we want to decrypt this.
+        newFileName = f.getName();
+        headerText = "Enter the encryption key: ";
+    } else { // File is not encrypted, we want to encrypt this.
+        newFileName = f.getNameWithExtension() + ".encr";
+        headerText = "Enter an encryption key (Remember this!): ";
+    }
+
+    if (fs::exists(newFileName)) {
+        view.showError("Destination file already exists."); return;
+    }
+
+    // Get the key from the user
+    clearScreen();
+    view.printHeader(headerText);
+
+    std::string key = "";
+    std::getline(std::cin, key);
+
+    Encrypt e = Encrypt();
+
+    std::string const newPath = curPath + "/" + newFileName;
+
+    // Creates the file.
+    std::ofstream encFile(newPath);
+    if (f.getExtension() == ".encr") {
+        encFile << e.decrypt(curPath + "/" + f.getNameWithExtension(), key);
+    } else {
+        encFile << e.encrypt(curPath + "/" + f.getNameWithExtension(), key);
+    }
+    
+    encFile.close();
+
+    fileList = ctrl.getFiles(curPath); // Refresh
+}
+
+void MainApp::clearScreen() {
+    input.clearScreen();
+#ifdef _WIN32
+    view.emptyScreen();
+    input.clearScreen();
+#endif
 }

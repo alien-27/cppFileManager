@@ -33,6 +33,8 @@ class MainApp
 		void makeNew();
 		void renameFile(std::string path);
 		void deleteFile(std::string path);
+		void encrypt(File f);
+		void clearScreen();
 	public:
 		MainApp();
 };
