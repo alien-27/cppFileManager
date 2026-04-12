@@ -38,7 +38,6 @@ public:
 	void printHeader(std::string title);
 	void exitMessage();
 	void showError(std::string msg);
-	void emptyScreen();
 	void printSortOptions();
 	void displayDetails(File& f);
 };

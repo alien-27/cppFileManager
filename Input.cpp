@@ -80,3 +80,9 @@ int Input::consoleHeight() {
 }
 
 #endif
+
+void Input::emptyScreen() {
+    for (int i = 0; i < consoleHeight(); i++) {
+        std::cout << std::string(120, ' ');
+    }
+}

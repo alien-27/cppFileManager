@@ -3,13 +3,13 @@
 #include "search.h"
 #include "Sort.h"
 #include "Encrypt.h"
+#include "TextEditor.h"
 
 #include "TextFile.h"
 
 #include <fstream>
 
 MainApp::MainApp() {
-    //curPath = "C:\\Users\\2000389\\OneDrive - Dundee and Angus College\\Documents";
     selected = 0;
     fileList = ctrl.getFiles(curPath);
 
@@ -101,7 +101,7 @@ MainApp::MainApp() {
 
 #ifdef _WIN32
         if (screenEmpty) {
-            view.emptyScreen();
+            input.emptyScreen();
             input.clearScreen();
         }
 #endif
@@ -179,9 +179,9 @@ void MainApp::enter() {
             switch (charInput) {
                 case bkspChar: clearScreen(); return; break; // Exit
                 case enterChar: // Enter text editor (on text files only)
-                    //if (fileList[selected].getType() == "Text" || fileList[selected].getType() == "Code") {
-                        
-                    //}
+                    if (fileList[selected].getType() == "Text" || fileList[selected].getType() == "Code") {
+                        TextEditor te = TextEditor(fileList[selected].getPath());
+                    }
                     break;
                 default: break;
             }
@@ -348,7 +348,7 @@ void MainApp::encrypt(File f) {
 void MainApp::clearScreen() {
     input.clearScreen();
 #ifdef _WIN32
-    view.emptyScreen();
+    input.emptyScreen();
     input.clearScreen();
 #endif
 }

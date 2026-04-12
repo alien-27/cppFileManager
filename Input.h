@@ -5,5 +5,6 @@ class Input {
 		void clearScreen();
 		int consoleWidth();
 		int consoleHeight();
+		void emptyScreen();
 };
 

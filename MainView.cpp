@@ -137,7 +137,9 @@ void MainView::displayDetails(File& f) {
 
 void MainView::printHeader(std::string title) {
     std::string printStr = title;
-    if (printStr.length() > input.consoleWidth() - 1) printStr = title.substr(title.length() - (input.consoleWidth() - 1));
+    if (printStr.length() > input.consoleWidth() - 1) {
+        printStr = title.substr(title.length() - (input.consoleWidth() - 1));
+    }
 
     if (errMsg != "") {
         printStr = "ERROR: " + errMsg;
@@ -183,10 +185,4 @@ void MainView::exitMessage() {
 
 void MainView::showError(std::string msg) {
     errMsg = msg;
-}
-
-void MainView::emptyScreen() {
-    for (int i = 0; i < input.consoleHeight(); i++) {
-        std::cout << std::string(120, ' ');
-    }
 }
