@@ -10,5 +10,5 @@ class TextEditorView {
     private:
 	    Input input;
     public:
-        void displayTextEditor(std::string filePath, std::vector<std::string> contents);
+        void displayTextEditor(std::string filePath, std::vector<std::string> contents, int column, int row);
 };

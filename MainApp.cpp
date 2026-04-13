@@ -61,8 +61,7 @@ MainApp::MainApp() {
                     selected = ctrl.setSelect((int)fileList.size() - 1, -1, (int)fileList.size()); break;
                 default: break;
             }
-        }
-        else {
+        } else {
             switch (charInput) {
                 case bkspChar: // Backspace
                     back(); break;

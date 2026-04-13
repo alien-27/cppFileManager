@@ -10,13 +10,15 @@ class TextEditor {
     private:
         std::string filePath;
         std::vector<std::string> contents;
-        int column;
-        int row;
+        int column = 0;
+        int row = 1;
 
         Input input;
         TextEditorView view;
 
         void clearScreen();
+        void changeRow(int amt);
+        void changeColumn(int amt);
     public:
         TextEditor(std::string filePath);
 };
