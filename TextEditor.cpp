@@ -21,11 +21,9 @@ TextEditor::TextEditor(std::string filePath) {
     int p = 0;
 
     do {
-        //if (!specialChar) {
-            p++;
-            clearScreen();
-            view.displayTextEditor(filePath, contents, column, row);
-        //}
+        p++;
+        clearScreen();
+        view.displayTextEditor(filePath, contents, column, row);
         getInput();
     } while (!exit);
 }
@@ -36,19 +34,24 @@ void TextEditor::getInput() {
     int const downChar = 80;
     int const leftChar = 65; // TO-DO: get correct values for left and right on windows
     int const rightChar = 66;
+
+    int const homeChar = 71;
+    int const endChar = 79;
+    int const bkspChar = 8;
+    int const enterChar = 13;
 #else
     int const upChar = 65;
     int const downChar = 66;
     int const leftChar = 68;
     int const rightChar = 67; // lol
+
+    int const homeChar = 72;
+    int const endChar = 70;
+    int const bkspChar = 127;
+    int const enterChar = 10;
 #endif
 
     int charInput = input.getch();
-
-    if (specialChar) {
-        specialChar = false;
-        //return;
-    }
 
     //std::cout << (charInput);
 
@@ -59,13 +62,14 @@ void TextEditor::getInput() {
 #else
     if (charInput == 91) {
 #endif
-        specialChar = true;
         charInput = input.getch();
         switch (charInput) {
             case upChar: changeRow(-1); break; // Up Arrow
             case downChar: changeRow(1); break; // Down Arrow
             case leftChar: changeColumn(-1); break; // Left Arrow
             case rightChar: changeColumn(1); break; // Right Arrow
+            case homeChar: row = 1; changeRow(0); break;
+            case endChar: row = contents.size(); changeRow(0); break;
             default: break;
         }
         //charInput = input.getch();
@@ -73,6 +77,8 @@ void TextEditor::getInput() {
     } else {
         switch (charInput) {
             case 48: exit = true; return; // 0 (Exit)
+            case bkspChar: bkspPress(); break;
+            case enterChar: enterPress(); break;
             default:
                 if (charInput >= 32 && charInput <= 126) {
                     contents[row - 1] = addChar(char(charInput));
@@ -119,6 +125,47 @@ std::string TextEditor::addChar(char ch) {
     }
     
     return newStr;
+}
+
+void TextEditor::enterPress() {
+    std::string newStr = "";
+    std::string oldStr = contents[row - 1];
+
+    for (int i = 0; i < oldStr.length(); i++) {
+        if (i == column) {
+            contents[row - 1] = newStr;
+            newStr = "";
+        }
+        newStr += oldStr[i];
+    }
+
+    contents.insert(contents.begin() + row, newStr);
+
+    column = 0;
+    changeRow(1);
+}
+
+void TextEditor::bkspPress() {
+    if (column > 0) { // Get rid of character before
+        std::string newStr = "";
+        std::string oldStr = contents[row - 1];
+
+        for (int i = 0; i < oldStr.length(); i++) {
+            if (i != column - 1) newStr += oldStr[i];
+        }
+
+        contents[row - 1] = newStr;
+
+        changeColumn(-1);
+    } else { // Move contents of this row to previous row
+        int newCol = contents[row - 2].length();
+
+        contents[row - 2] += contents[row - 1];
+        contents.erase(contents.begin() + row - 1);
+
+        column = newCol;
+        changeRow(-1);
+    }
 }
 
 void TextEditor::clearScreen()

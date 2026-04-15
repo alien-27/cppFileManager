@@ -13,7 +13,6 @@ class TextEditor {
         int column = 0;
         int row = 1;
         bool exit = false;
-        bool specialChar = false;
 
         Input input;
         TextEditorView view;
@@ -22,6 +21,8 @@ class TextEditor {
         void clearScreen();
         void changeRow(int amt);
         void changeColumn(int amt);
+        void enterPress();
+        void bkspPress();
         std::string addChar(char ch);
     public:
         TextEditor(std::string filePath);
