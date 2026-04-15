@@ -28,19 +28,11 @@ void TextEditorView::displayTextEditor(std::string filePath, std::vector<std::st
 
         if (i + startOffset < contents.size()) {
             if (curRow == row) {
-                //curRowText = "\033[47m\033[30m" + contents[i + startOffset] + " \033[0m";
+                std::string fullRow = contents[i + startOffset] + " ";
 
-                std::string fullRow = contents[i + startOffset];
-
-                for (int j = 0; j < fullRow.length() + 1; j++) {
+                for (int j = 0; j < fullRow.length(); j++) {
                     if (j == column) curRowText += "\033[47m\033[30m";
-
-                    if (j < fullRow.length()) {
-                        curRowText += fullRow[j];
-                    } else {
-                        curRowText += " ";
-                    }
-                    
+                    curRowText += fullRow[j];
                     if (j == column) curRowText += "\033[0m";
                 }
             } else {
@@ -48,10 +40,11 @@ void TextEditorView::displayTextEditor(std::string filePath, std::vector<std::st
             }
         }
 
-        std::cout << "\033[47m\033[30m" << std::string(rowCountWidth - std::to_string(curRow).length(), ' ') << curRow << "\033[0m "
+        std::cout << "\033[34m" << std::string(rowCountWidth - std::to_string(curRow).length(), ' ') << curRow << "\033[0m "
                   << curRowText << std::endl;
     }
 
-    std::string footer = "press 0 to exit";
+    //std::string footer = "press 0 to exit";
+    std::string footer = "Ln " + std::to_string(row) + ", Col " + std::to_string(column + 1) + " | press 0 to exit";
     std::cout << "\033[47m\033[30m" << footer << std::string(width - footer.length(), ' ') << "\033[0m";
 }

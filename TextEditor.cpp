@@ -3,6 +3,9 @@
 #include <fstream>
 #include <string>
 
+// temporary
+#include <iostream>
+
 TextEditor::TextEditor(std::string filePath) {
     this->filePath = filePath;
 
@@ -14,7 +17,20 @@ TextEditor::TextEditor(std::string filePath) {
             contents.push_back(line);
         }
 	}
-    
+
+    int p = 0;
+
+    do {
+        //if (!specialChar) {
+            p++;
+            clearScreen();
+            view.displayTextEditor(filePath, contents, column, row);
+        //}
+        getInput();
+    } while (!exit);
+}
+
+void TextEditor::getInput() {
 #ifdef _WIN32
     int const upChar = 72;
     int const downChar = 80;
@@ -27,33 +43,44 @@ TextEditor::TextEditor(std::string filePath) {
     int const rightChar = 67; // lol
 #endif
 
-    do {
-        clearScreen();
-        view.displayTextEditor(filePath, contents, column, row);
+    int charInput = input.getch();
 
-        int charInput = input.getch();
-        // Some keyboard inputs are made up of two characters. What the if statement below does is check
-        // if the first one is a special key, and gets the input from the second one.
+    if (specialChar) {
+        specialChar = false;
+        //return;
+    }
+
+    //std::cout << (charInput);
+
+    // Some keyboard inputs are made up of two characters. What the if statement below does is check
+    // if the first one is a special key, and gets the input from the second one.
 #ifdef _WIN32
-        if (charInput == 0 || charInput == 224) {
+    if (charInput == 0 || charInput == 224) {
 #else
-        if (charInput == 91) {
+    if (charInput == 91) {
 #endif
-            charInput = input.getch();
-            switch (charInput) {
-                case upChar: changeRow(-1); break; // Up Arrow
-                case downChar: changeRow(1); break; // Down Arrow
-                case leftChar: changeColumn(-1); break; // Left Arrow
-                case rightChar: changeColumn(1); break; // Right Arrow
-                default: break;
-            }
-        } else {
-            switch (charInput) {
-                case 48: return; // 0 (Exit)
-                default: break;
-            }
+        specialChar = true;
+        charInput = input.getch();
+        switch (charInput) {
+            case upChar: changeRow(-1); break; // Up Arrow
+            case downChar: changeRow(1); break; // Down Arrow
+            case leftChar: changeColumn(-1); break; // Left Arrow
+            case rightChar: changeColumn(1); break; // Right Arrow
+            default: break;
         }
-    } while (true);
+        //charInput = input.getch();
+        return;
+    } else {
+        switch (charInput) {
+            case 48: exit = true; return; // 0 (Exit)
+            default:
+                if (charInput >= 32 && charInput <= 126) {
+                    contents[row - 1] = addChar(char(charInput));
+                    changeColumn(1);
+                }
+                return;
+        }
+    }
 }
 
 void TextEditor::changeRow(int amt) {
@@ -74,10 +101,28 @@ void TextEditor::changeColumn(int amt) {
         column = contents[row - 2].length();
         changeRow(-1);
     }
-    if (column > contents[row - 1].length()) column = contents[row - 1].length();
+    if (column > contents[row - 1].length()) { // Go to start of next row
+        changeRow(1);
+        column = 0;
+    }
 }
 
-void TextEditor::clearScreen() {
+std::string TextEditor::addChar(char ch) {
+    std::string oldStr = contents[row - 1];
+    std::string newStr = "";
+
+    for (int i = 0; i < oldStr.length() + 1; i++) {
+        if (i == column) {
+            newStr += ch;
+        }
+        if (i < oldStr.length()) newStr += oldStr[i];
+    }
+    
+    return newStr;
+}
+
+void TextEditor::clearScreen()
+{
     input.clearScreen();
 #ifdef _WIN32
     input.emptyScreen();

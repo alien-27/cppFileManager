@@ -12,13 +12,17 @@ class TextEditor {
         std::vector<std::string> contents;
         int column = 0;
         int row = 1;
+        bool exit = false;
+        bool specialChar = false;
 
         Input input;
         TextEditorView view;
 
+        void getInput();
         void clearScreen();
         void changeRow(int amt);
         void changeColumn(int amt);
+        std::string addChar(char ch);
     public:
         TextEditor(std::string filePath);
 };
