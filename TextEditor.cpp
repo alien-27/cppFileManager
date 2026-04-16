@@ -18,22 +18,33 @@ TextEditor::TextEditor(std::string filePath) {
         }
 	}
 
-    int p = 0;
-
     do {
-        p++;
-        clearScreen();
+        view.clearScreen();
         view.displayTextEditor(filePath, contents, column, row);
         getInput();
     } while (!exit);
+
+    // Exit?
+    do {
+        view.clearScreen();
+        view.displaySaveScreen(filePath);
+
+        int charInput = input.getch();
+
+        switch (charInput) {
+            case 49: return; // 1 (Exit and save)
+            case 50: return; // 2 (Exit without saving)
+            default: break;
+        }
+    } while (true);
 }
 
 void TextEditor::getInput() {
 #ifdef _WIN32
     int const upChar = 72;
     int const downChar = 80;
-    int const leftChar = 65; // TO-DO: get correct values for left and right on windows
-    int const rightChar = 66;
+    int const leftChar = 75; // TO-DO: get correct values for left and right on windows
+    int const rightChar = 77;
 
     int const homeChar = 71;
     int const endChar = 79;
@@ -96,7 +107,7 @@ void TextEditor::changeRow(int amt) {
     if (column > contents[row - 1].length()) column = contents[row - 1].length();
 
     if (row > contents.size()) {
-        contents.push_back("");
+        row = contents.size();
     }
 }
 
@@ -131,12 +142,14 @@ void TextEditor::enterPress() {
     std::string newStr = "";
     std::string oldStr = contents[row - 1];
 
-    for (int i = 0; i < oldStr.length(); i++) {
-        if (i == column) {
-            contents[row - 1] = newStr;
-            newStr = "";
+    if (column < oldStr.length()) {
+        for (int i = 0; i < oldStr.length(); i++) {
+            if (i == column) {
+                contents[row - 1] = newStr;
+                newStr = "";
+            }
+            newStr += oldStr[i];
         }
-        newStr += oldStr[i];
     }
 
     contents.insert(contents.begin() + row, newStr);
@@ -166,13 +179,4 @@ void TextEditor::bkspPress() {
         column = newCol;
         changeRow(-1);
     }
-}
-
-void TextEditor::clearScreen()
-{
-    input.clearScreen();
-#ifdef _WIN32
-    input.emptyScreen();
-    input.clearScreen();
-#endif
 }

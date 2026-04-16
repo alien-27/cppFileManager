@@ -18,7 +18,6 @@ class TextEditor {
         TextEditorView view;
 
         void getInput();
-        void clearScreen();
         void changeRow(int amt);
         void changeColumn(int amt);
         void enterPress();

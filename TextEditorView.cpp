@@ -1,16 +1,20 @@
 #include "TextEditorView.h"
 
-void TextEditorView::displayTextEditor(std::string filePath, std::vector<std::string> contents, int column, int row) {
+void TextEditorView::printHeader(std::string title) {
     int width = input.consoleWidth();
-    int height = input.consoleHeight();
-
-    std::string title = "Edit File: " + filePath;
 
     if (title.length() > width) {
         title = "..." + title.substr(title.length() - (width - 3));
     }
 
     std::cout << "\033[44m\033[37m" << title << std::string(width - title.length(), ' ') << std::endl << "\033[0m";
+}
+
+void TextEditorView::displayTextEditor(std::string filePath, std::vector<std::string> contents, int column, int row) {
+    int width = input.consoleWidth();
+    int height = input.consoleHeight();
+
+    printHeader("Edit File: " + filePath);
 
     int startOffset = 0;
 
@@ -44,7 +48,21 @@ void TextEditorView::displayTextEditor(std::string filePath, std::vector<std::st
                   << curRowText << std::endl;
     }
 
-    //std::string footer = "press 0 to exit";
-    std::string footer = "Ln " + std::to_string(row) + ", Col " + std::to_string(column + 1) + " | press 0 to exit";
+    std::string footer = "Ln " + std::to_string(row) + ", Col " + std::to_string(column + 1) + " | Esc to Exit";
     std::cout << "\033[47m\033[30m" << footer << std::string(width - footer.length(), ' ') << "\033[0m";
+}
+
+void TextEditorView::displaySaveScreen(std::string filePath) {
+    printHeader("Save File " + filePath + "?");
+
+    std::cout << "[1] Exit and Save" << std::endl
+              << "[2] Exit without Saving" << std::endl;
+}
+
+void TextEditorView::clearScreen() {
+    input.clearScreen();
+#ifdef _WIN32
+    input.emptyScreen();
+    input.clearScreen();
+#endif
 }
