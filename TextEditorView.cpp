@@ -56,7 +56,8 @@ void TextEditorView::displaySaveScreen(std::string filePath) {
     printHeader("Save File " + filePath + "?");
 
     std::cout << "[1] Exit and Save" << std::endl
-              << "[2] Exit without Saving" << std::endl;
+              << "[2] Exit without Saving" << std::endl
+              << "[3] Return" << std::endl;
 }
 
 void TextEditorView::clearScreen() {

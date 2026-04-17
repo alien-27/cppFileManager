@@ -2,13 +2,13 @@
 
 #include "Input.h"
 #include "TextEditorView.h"
+#include "TextEditorController.h"
 
 #include <string>
 #include <vector>
 
 class TextEditor {
     private:
-        std::string filePath;
         std::vector<std::string> contents;
         int column = 0;
         int row = 1;
@@ -16,6 +16,7 @@ class TextEditor {
 
         Input input;
         TextEditorView view;
+        TextEditorController ctrl;
 
         void getInput();
         void changeRow(int amt);

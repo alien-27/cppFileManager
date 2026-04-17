@@ -1,41 +1,40 @@
 #include "TextEditor.h"
 
-#include <fstream>
 #include <string>
 
-// temporary
-#include <iostream>
-
 TextEditor::TextEditor(std::string filePath) {
-    this->filePath = filePath;
-
-	std::ifstream file(filePath);
-
-	if (file.is_open()) {
-		std::string line;
-        while (std::getline(file, line)) { // For every line...
-            contents.push_back(line);
-        }
-	}
+    contents = ctrl.readFromFile(filePath);
 
     do {
-        view.clearScreen();
-        view.displayTextEditor(filePath, contents, column, row);
-        getInput();
-    } while (!exit);
+        do {
+            view.clearScreen();
+            view.displayTextEditor(filePath, contents, column, row);
+            getInput();
+        } while (!exit);
 
-    // Exit?
-    do {
-        view.clearScreen();
-        view.displaySaveScreen(filePath);
+        bool exiting = true;
+        exit = false;
 
-        int charInput = input.getch();
+        do {
+            view.clearScreen();
+            view.displaySaveScreen(filePath);
 
-        switch (charInput) {
-            case 49: return; // 1 (Exit and save)
-            case 50: return; // 2 (Exit without saving)
-            default: break;
-        }
+            int charInput = input.getch();
+
+            switch (charInput) {
+                case 49: 
+                    if (ctrl.saveToFile(filePath, contents)) {
+                        return;
+                    } else {
+                        // display error message to-do
+                    }
+                    
+                    return; // 1 (Exit and save)
+                case 50: return; // 2 (Exit without saving)
+                case 51: exiting = false; break; // 3 (Return)
+                default: break;
+            }
+        } while (exiting);
     } while (true);
 }
 
@@ -63,8 +62,6 @@ void TextEditor::getInput() {
 #endif
 
     int charInput = input.getch();
-
-    //std::cout << (charInput);
 
     // Some keyboard inputs are made up of two characters. What the if statement below does is check
     // if the first one is a special key, and gets the input from the second one.
