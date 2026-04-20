@@ -26,9 +26,10 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
     }
 
     int startRow = 0; // The top row that is being displayed
-    int rowsToPrint = input.consoleHeight() - 3; // How many rows are displayed
+    int rowsToPrint = input.consoleHeight() - 3; // How many rows will be displayed
 
-    if (f.size() > rowsToPrint) {
+    // Get start row.
+    if (f.size() > rowsToPrint) { // If there are more rows in total than there are rows being displayed...
         if (selected >= rowsToPrint / 2) {
             startRow = selected - (rowsToPrint / 2) + 1;
         }
@@ -38,21 +39,23 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
         }
     }
 
-    for (int i = startRow; i < startRow + rowsToPrint; i++) {
-        if (f.size() > rowsToPrint) { // SCROLL BAR
+    for (int i = startRow; i < startRow + rowsToPrint; i++) { // Display each row.
+        // SCROLL BAR
+        if (f.size() > rowsToPrint) {
             float trueI = (float)(i - startRow) / (rowsToPrint); // What row we are currntly printing.
             float barTop = (float)((float)startRow / (float)f.size()); // The top of the scroll bar
             float barBottom = (float)((float)(startRow + rowsToPrint + 1) / (float)f.size()); // The bottom of the scroll bar
 
-            if (trueI >= barTop && trueI <= barBottom) { // If the current row intersecs the scrollbar
+            if (trueI >= barTop && trueI <= barBottom) { // If the current row intersects the scrollbar
                 std::cout << "\033[44m"; // Set colour to blue
             } else {
-                std::cout << "\033[0m"; // Else, set colour to black.
+                std::cout << "\033[0m"; // Else, set colour to black (invisible).
             }
 
-            std::cout << " \033[0m "; // Prints the bar, and a space after it.
+            std::cout << " \033[0m "; // Prints the bar, and an empty space after it.
         }
 
+        // FILE INFO
         if (i < f.size()) { // If this row shoudn't be empty.
             std::string sizeUnit = "bytes";
 
@@ -114,11 +117,8 @@ void MainView::displayDetails(File& f) {
               << "\033[44m\033[37m" << std::string(input.consoleWidth(), ' ') << "\033[0m" << std::endl;
 
     if (f.getType() == "Text" || f.getType() == "Code") {
-        // Cast the generic File reference to a TextFile reference
-        TextFile& tf = static_cast<TextFile&>(f);
-        std::cout << "Lines: " << tf.getLines() << std::endl;
-
-        //std::cout << "Lines: " << f.getLines() << std::endl;
+        TextFile& tf = static_cast<TextFile&>(f); // Turn f into a TextFile
+        std::cout << "Lines: " << tf.getLines() << std::endl; // Display no of lines.
         filledRows += 1;
     } else if (f.getType() == "Audio") {
         AudioFile& af = static_cast<AudioFile&>(f);
@@ -135,45 +135,46 @@ void MainView::displayDetails(File& f) {
     printFooter(fileCtrls);
 }
 
-void MainView::printHeader(std::string title) {
+void MainView::printHeader(std::string title) { // Displays a header.
     std::string printStr = title;
-    if (printStr.length() > input.consoleWidth() - 1) {
-        printStr = title.substr(title.length() - (input.consoleWidth() - 1));
+
+    int width = input.consoleWidth();
+
+    if (printStr.length() > width - 1) { // If ths title is wider than the window...
+        printStr = title.substr(title.length() - (width - 1)); // Cut the beginning of it off.
     }
 
-    if (errMsg != "") {
+    // Display the header.
+    if (errMsg != "") { // If there is an error...
         printStr = "ERROR: " + errMsg;
-        std::cout << "\033[41m\033[30m" << printStr;
-        errMsg = "";
+        std::cout << "\033[41m\033[30m" << printStr; // DIsplay that instead of the title.
+        errMsg = ""; // Reset the error variable.
     }
     else {
         std::cout << "\033[44m\033[37m" << printStr;
     }
 
-    int width = input.consoleWidth();
-
-    if (width > printStr.length()) {
-        std::cout << std::string(width - printStr.length(), ' ');
+    if (width > printStr.length()) { // If the title is shorter than the window width...
+        std::cout << std::string(width - printStr.length(), ' '); // Fill the rest of the row with spaces so the background colour isn't cut off
     }
 
-    std::cout << std::endl << "\033[0m";
+    std::cout << std::endl << "\033[0m"; // Reset concolours.
 }
 
 void MainView::printFooter(std::map<std::string, std::string> ctrls) {
-    int curWidth = 0;
+    int curWidth = 0; // How many characters are in the footer text.
 
-    // Iterate through map
     std::map<std::string, std::string>::iterator it;
-    for (auto it = ctrls.begin(); it != ctrls.end(); it++) {
-        std::cout << "\033[44m\033[37m " << it->first << " \033[47m\033[30m " << it->second << " ";
+    for (auto it = ctrls.begin(); it != ctrls.end(); it++) { // For each entry...
+        std::cout << "\033[44m\033[37m " << it->first << " \033[47m\033[30m " << it->second << " "; // ...Display its data
 
-        curWidth += it->first.length() + it->second.length() + 4;
+        curWidth += it->first.length() + it->second.length() + 4; // Update the width.
     }
 
     int width = input.consoleWidth();
 
-    if (width > curWidth) {
-        std::cout << std::string(width - curWidth, ' ');
+    if (width > curWidth) { // If the width is shorter than the window width...
+        std::cout << std::string(width - curWidth, ' '); // Fill the rest of the row with spaces so the background colour isn't cut off
     }
 
     std::cout << "\033[0m"; // Reset console colours.

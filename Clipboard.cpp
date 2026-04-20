@@ -10,8 +10,8 @@ void Clipboard::copy(std::string p, bool c) {
 }
 
 void Clipboard::paste() {
-	if (copiedFilepath == "") return;
-	if (!fs::exists(copiedFilepath)) return;
+	if (copiedFilepath == "") return; // Stop if there is bothing copied.
+	if (!fs::exists(copiedFilepath)) return; // Stop if the copied file has been removed.
 
 	fs::path p(copiedFilepath);
 
@@ -26,8 +26,8 @@ void Clipboard::paste() {
 
 	fs::copy(p, name + extension); // Copy the file
 
-	if (cutting) {
-		fs::remove(p); // Cut the file
+	if (cutting) { // If cutting...
+		fs::remove(p); // ...Cut the file
 	}
 
 	copiedFilepath = ""; // Reset clipboard.

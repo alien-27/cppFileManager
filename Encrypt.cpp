@@ -8,7 +8,7 @@ namespace fs = std::filesystem;
 
 Encrypt::Encrypt() {}
 
-std::string Encrypt::encrypt(std::string path, std::string key) {
+std::string Encrypt::encrypt(std::string path, std::string key) { // This returns the encrypted contents of a file.
 	std::string returnStr = "";
 	std::ifstream file(path);
 
@@ -22,13 +22,14 @@ std::string Encrypt::encrypt(std::string path, std::string key) {
 
 		std::string newStr = "";
 		for (int i = 0; i < line.length(); i++) { // For every character in the line...
+			// Shuffle the character
 			char keyChar = key[i % key.length()];
 			char curChar = line[i] + (keyChar ^ 2);
 
-			newStr += curChar;
+			newStr += curChar; // Add encrypted char to string
 		}
 
-        returnStr += newStr + "\n";
+        returnStr += newStr + "\n"; // Add string to total.
     }
 
 	return returnStr;
@@ -48,13 +49,14 @@ std::string Encrypt::decrypt(std::string path, std::string key) {
 
 		std::string newStr = "";
 		for (int i = 0; i < line.length(); i++) { // For every character in the line...
+			// Unshuffle the character. This is basically the reverse of the above function
 			char keyChar = key[i % key.length()];
 			char curChar = line[i] - (keyChar ^ 2);
 
-			newStr += curChar;
+			newStr += curChar; // Add decrypted char to string
 		}
 
-        returnStr += newStr + "\n";
+        returnStr += newStr + "\n"; // Add string to total.
     }
 
 	return returnStr;

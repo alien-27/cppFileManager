@@ -8,6 +8,7 @@
 #include <conio.h>
 #include <windows.h>
 
+// Get a character from keyboard inputs
 int Input::getch() {
 	return _getch();
 }
@@ -19,6 +20,7 @@ void Input::clearScreen() {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPosition);
 }
 
+// Return the width of the screen
 int Input::consoleWidth() {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     int columns, rows;
@@ -28,6 +30,7 @@ int Input::consoleWidth() {
     return columns;
 }
 
+// Return the height of the screen
 int Input::consoleHeight() {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     int columns, rows;
@@ -47,8 +50,9 @@ int Input::consoleHeight() {
 
 #include <unistd.h>
 
-int unix_getch() {
-    struct termios oldTermios, newTermios;
+// Get a character from keyboard inputs
+int Input::getch() {
+	struct termios oldTermios, newTermios;
     int ch;
     tcgetattr(STDIN_FILENO, &oldTermios);
     newTermios = oldTermios;
@@ -59,20 +63,18 @@ int unix_getch() {
     return ch;
 }
 
-int Input::getch() {
-	return unix_getch();
-}
-
 void Input::clearScreen() {
 	system("clear");
 }
 
+// Return the width of the screen
 int Input::consoleWidth() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     return w.ws_col;
 }
 
+// Return the height of the screen
 int Input::consoleHeight() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);

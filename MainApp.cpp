@@ -17,6 +17,7 @@ MainApp::MainApp() {
     view.printHeader(curPath);
     view.displayFiles(fileList, selected);
 
+    // Get value of special characters.
 #ifdef _WIN32
     int const upChar = 72;
     int const downChar = 80;
@@ -35,7 +36,7 @@ MainApp::MainApp() {
     int const enterChar = 10;
 #endif
 
-    do {
+    do { // Get a character input and do a thing based on that input.
         int charInput = input.getch();
         input.clearScreen();
 
@@ -51,21 +52,21 @@ MainApp::MainApp() {
             charInput = input.getch();
             screenEmpty = false;
             switch (charInput) {
-                case upChar: // Up Arrow
+                case upChar: // Up Arrow, Change selection by -1
                     selected = ctrl.setSelect(selected - 1, -1, (int)fileList.size()); break;
-                case downChar: // Down Arrow
+                case downChar: // Down Arrow, Change selection by 1
                     selected = ctrl.setSelect(selected + 1, -1, (int)fileList.size()); break;
-                case homeChar: // Home
+                case homeChar: // Home, Go to Top
                     selected = ctrl.setSelect(0, -1, (int)fileList.size()); break;
-                case endChar: // End
+                case endChar: // End, Go to Bottom
                     selected = ctrl.setSelect((int)fileList.size() - 1, -1, (int)fileList.size()); break;
                 default: break;
             }
         } else {
             switch (charInput) {
-                case bkspChar: // Backspace
+                case bkspChar: // Backspace, exit this directory
                     back(); break;
-                case enterChar: // Enter
+                case enterChar: // Enter, enter selected file/folder
                     enter(); break;
                 case 49: // 1 (Search)
                     startSearch(); break;
@@ -111,9 +112,9 @@ MainApp::MainApp() {
 }
 
 void MainApp::back() {
-    std::string prevPath = curPath; // Set current path to this incase something goes wrong
+    std::string prevPath = curPath; // Store current path incase something goes wrong
 
-    if (!isSearch) { // Only go into the containing folder if the user hasn't searched for something.
+    if (!isSearch) { // Only go into the containing folder if the user isn't searching
         try {
             fs::path current = fs::current_path();
             fs::current_path(current.parent_path());
@@ -141,13 +142,14 @@ void MainApp::back() {
 }
 
 void MainApp::enter() {
-    if (selected == -1) {
-        back();
-        return;
+    if (selected == -1) { // If "<< Back" is selected.
+        back(); // Go back,
+        return; // Don't do the rest of this function.
     }
-    if (fileList.empty()) return;
 
-    isSearch = false;
+    if (fileList.empty()) return; // Stop if there are no files to enter.
+
+    isSearch = false; // Reset search.
 
     if (fileList[selected].getIsFolder()) { // OPEN FOLDER
         try {
@@ -176,7 +178,7 @@ void MainApp::enter() {
 
             int charInput = input.getch();
             switch (charInput) {
-                case bkspChar: clearScreen(); return; break; // Exit
+                case bkspChar: clearScreen(); return; break; // Exit this screen.
                 case enterChar: // Enter text editor (on text files only)
                     if (fileList[selected].getType() == "Text" || fileList[selected].getType() == "Code") {
                         TextEditor te = TextEditor(fileList[selected].getPath());
@@ -236,9 +238,9 @@ void MainApp::makeNew() {
                 std::getline(std::cin, newName);
 
                 if (!fs::exists(newName)) { // If there is no file with this name in the directory...
-                    std::ofstream newFile(newName);
+                    std::ofstream newFile(newName); // Create the file.
                 } else {
-                    view.showError("File already exists");
+                    view.showError("File already exists"); // else, display an error.
                 }
 
                 return;
@@ -249,9 +251,9 @@ void MainApp::makeNew() {
                 std::getline(std::cin, newName);
 
                 if (!fs::exists(newName)) { // If there is no file with this name in the directory...
-                    fs::create_directory(newName);
+                    fs::create_directory(newName); // Create the folder
                 } else {
-                    view.showError("Folder already exists");
+                    view.showError("Folder already exists"); // else, display an error.
                 }
                 
                 return;
@@ -262,8 +264,8 @@ void MainApp::makeNew() {
 }
 
 void MainApp::renameFile(std::string path) {
-    if (path == "") return;
-    if (!fs::exists(path)) return;
+    if (path == "") return; // Stop if there is no file to rename
+    if (!fs::exists(path)) return; // Stop if the file doesn't exist.
 
     fs::path p(path);
 
@@ -273,6 +275,7 @@ void MainApp::renameFile(std::string path) {
     clearScreen();
     view.printHeader("Rename file: '" + name + "'");
 
+    // Get new name from user.
     std::string newName = "";
     std::getline(std::cin, newName);
 
@@ -316,7 +319,7 @@ void MainApp::encrypt(File f) {
         headerText = "Enter an encryption key (Remember this!): ";
     }
 
-    if (fs::exists(newFileName)) {
+    if (fs::exists(newFileName)) { // Stop if a file with the destination name exists.
         view.showError("Destination file already exists."); return;
     }
 

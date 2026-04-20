@@ -4,12 +4,13 @@
 #include <cctype>
 #include <unordered_set>
 
-File::File(fs::directory_entry p) {
+File::File(fs::directory_entry p) { // This gets the metadata from a chosen file.
 	this->name = p.path().filename().stem().string();
 	this->path = p.path().string();
 
+	// Get the date modified
 	try {
-		auto ftime = fs::last_write_time(p.path()); // Get the date modified
+		auto ftime = fs::last_write_time(p.path());
 		auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now());
 		this->dateMod = std::chrono::system_clock::to_time_t(sctp);
 	} catch (const std::filesystem::filesystem_error& e) {
@@ -34,7 +35,6 @@ File::File(fs::directory_entry p) {
 			}
 		}
 	} catch (const std::filesystem::filesystem_error& e) {
-		//return e.what();
 		this->size = 0;
 	}
 
@@ -60,6 +60,7 @@ File::File(fs::directory_entry p) {
 		std::unordered_set<std::string> archive = { ".zip", ".rar", ".7z", ".tar", ".gzip"};
 		std::unordered_set<std::string> application = { ".exe", ".app", ".apk", ".msi"};
 
+		// Switch statements don't work for strings so i have to do this.
 		if (text.count(extension)) {
 			this->type = "Text";
 		} else if (document.count(extension)) {
@@ -84,6 +85,7 @@ File::File(fs::directory_entry p) {
 	}
 }
 
+// Getters
 std::string File::getName() const { return name; }
 std::string File::getPath() const { return path; }
 std::string File::getType() const { return type; }
