@@ -8,7 +8,10 @@
 #include <conio.h>
 #include <windows.h>
 
-// Get a character from keyboard inputs
+/// <summary>
+/// Get a character from keyboard inputs
+/// </summary>
+/// <returns></returns>
 int Input::getch() {
 	return _getch();
 }
@@ -20,20 +23,26 @@ void Input::clearScreen() {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPosition);
 }
 
-// Return the width of the screen
+/// <summary>
+/// Return the width of the screen
+/// </summary>
+/// <returns></returns>
 int Input::consoleWidth() {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
-    int columns, rows;
+    int columns;
 
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     return columns;
 }
 
-// Return the height of the screen
+/// <summary>
+/// Return the height of the screen
+/// </summary>
+/// <returns></returns>
 int Input::consoleHeight() {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
-    int columns, rows;
+    int rows;
 
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
@@ -50,7 +59,10 @@ int Input::consoleHeight() {
 
 #include <unistd.h>
 
-// Get a character from keyboard inputs
+/// <summary>
+/// Get a character from keyboard inputs
+/// </summary>
+/// <returns></returns>
 int Input::getch() {
 	struct termios oldTermios, newTermios;
     int ch;
@@ -67,14 +79,20 @@ void Input::clearScreen() {
 	system("clear");
 }
 
-// Return the width of the screen
+/// <summary>
+/// Return the width of the screen
+/// </summary>
+/// <returns></returns>
 int Input::consoleWidth() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     return w.ws_col;
 }
 
-// Return the height of the screen
+/// <summary>
+/// Return the height of the screen
+/// </summary>
+/// <returns></returns>
 int Input::consoleHeight() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -83,6 +101,9 @@ int Input::consoleHeight() {
 
 #endif
 
+/// <summary>
+/// Fills the screen with black (empty) space.
+/// </summary>
 void Input::emptyScreen() {
     for (int i = 0; i < consoleHeight(); i++) {
         std::cout << std::string(120, ' ');

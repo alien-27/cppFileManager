@@ -5,6 +5,11 @@
 
 using namespace std::chrono_literals;
 
+/// <summary>
+/// Displays the lis of all the files.
+/// </summary>
+/// <param name="f">The file list</param>
+/// <param name="selected">The number of the selected file</param>
 void MainView::displayFiles(std::vector<File> f, int selected) {
     int width = input.consoleWidth(); // The width of the window
 
@@ -77,9 +82,15 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
         }
     }
     
+    // Add footer.
     printFooter(folderCtrls);
 }
 
+/// <summary>
+/// Sets the correct console colours when displaying files in a list.
+/// </summary>
+/// <param name="selected">If we are displaying the selected file</param>
+/// <returns></returns>
 std::string MainView::setColour(bool selected) {
     if (selected) { // If this is the selected option...
         return "\033[47m\033[30m"; // ...Foreground black, background white
@@ -89,6 +100,9 @@ std::string MainView::setColour(bool selected) {
     }
 }
 
+/// <summary>
+/// Displays the options for sorting files
+/// </summary>
 void MainView::printSortOptions() {
     std::cout << "[1] Sort By Name (Ascending)" << std::endl
               << "[2] Sort By Name (Descending)" << std::endl
@@ -100,14 +114,20 @@ void MainView::printSortOptions() {
               << "[8] Sort By Date (Descending)" << std::endl;
 }
 
+/// <summary>
+/// Displays the details of a selected file.
+/// </summary>
+/// <param name="f">The selected file</param>
 void MainView::displayDetails(File& f) {
     printHeader("Viewing File: " + f.getNameWithExtension());
 
+    // Get shortened version of the filepath if it is wider than the window.
     std::string pathEnd = f.getPath();
     if (pathEnd.length() > input.consoleWidth() - 30) pathEnd = "..." + pathEnd.substr(pathEnd.length() - (input.consoleWidth() - 30));
 
-    int filledRows = 9;
+    int filledRows = 9; // How many rows have been filled.
 
+    // Display the file details
     std::cout << "  ____   :          Name: " << f.getName() << std::endl
               << " | __|_\\ :          Type: " << f.getType() << std::endl
               << " | ___ | :     Extension: " << f.getExtension() << std::endl
@@ -116,6 +136,7 @@ void MainView::displayDetails(File& f) {
               << "         : Date Modified: " << f.getDateModStr()
               << "\033[44m\033[37m" << std::string(input.consoleWidth(), ' ') << "\033[0m" << std::endl;
 
+    // Display filetype specific details.
     if (f.getType() == "Text" || f.getType() == "Code") {
         TextFile& tf = static_cast<TextFile&>(f); // Turn f into a TextFile
         std::cout << "Lines: " << tf.getLines() << std::endl; // Display no of lines.
@@ -128,14 +149,20 @@ void MainView::displayDetails(File& f) {
         filledRows += 3;
     }
 
+    // Fill empty rows to offset footer
     for (int i = 0; i < input.consoleHeight() - filledRows; i++) {
         std::cout << std::endl;
     }
-    
+
+    // Add footer.
     printFooter(fileCtrls);
 }
 
-void MainView::printHeader(std::string title) { // Displays a header.
+/// <summary>
+/// Displays a header
+/// </summary>
+/// <param name="title">The title</param>
+void MainView::printHeader(std::string title) {
     std::string printStr = title;
 
     int width = input.consoleWidth();
@@ -147,7 +174,7 @@ void MainView::printHeader(std::string title) { // Displays a header.
     // Display the header.
     if (errMsg != "") { // If there is an error...
         printStr = "ERROR: " + errMsg;
-        std::cout << "\033[41m\033[30m" << printStr; // DIsplay that instead of the title.
+        std::cout << "\033[41m\033[30m" << printStr; // Display that instead of the title.
         errMsg = ""; // Reset the error variable.
     }
     else {
@@ -158,9 +185,13 @@ void MainView::printHeader(std::string title) { // Displays a header.
         std::cout << std::string(width - printStr.length(), ' '); // Fill the rest of the row with spaces so the background colour isn't cut off
     }
 
-    std::cout << std::endl << "\033[0m"; // Reset concolours.
+    std::cout << std::endl << "\033[0m"; // Reset console colours.
 }
 
+/// <summary>
+/// Displays a footer
+/// </summary>
+/// <param name="ctrls">The list of controls to display</param>
 void MainView::printFooter(std::map<std::string, std::string> ctrls) {
     int curWidth = 0; // How many characters are in the footer text.
 
@@ -180,10 +211,17 @@ void MainView::printFooter(std::map<std::string, std::string> ctrls) {
     std::cout << "\033[0m"; // Reset console colours.
 }
 
+/// <summary>
+/// Displays an exit message
+/// </summary>
 void MainView::exitMessage() {
     std::cout << "\033[44m\033[37mExiting Program.\033[0m";
 }
 
+/// <summary>
+/// Sets an error message to be displayed in the header
+/// </summary>
+/// <param name="msg"></param>
 void MainView::showError(std::string msg) {
     errMsg = msg;
 }

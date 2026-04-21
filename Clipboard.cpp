@@ -4,11 +4,19 @@
 
 namespace fs = std::filesystem;
 
+/// <summary>
+/// Stores a filepath to be pasted
+/// </summary>
+/// <param name="p">The Filepath</param>
+/// <param name="c">If we want to cut the file</param>
 void Clipboard::copy(std::string p, bool c) {
 	cutting = c;
 	copiedFilepath = p;
 }
 
+/// <summary>
+/// Pastes the stored file into the current directory.
+/// </summary>
 void Clipboard::paste() {
 	if (copiedFilepath == "") return; // Stop if there is bothing copied.
 	if (!fs::exists(copiedFilepath)) return; // Stop if the copied file has been removed.

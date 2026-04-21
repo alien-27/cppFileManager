@@ -4,7 +4,11 @@
 #include <cctype>
 #include <unordered_set>
 
-File::File(fs::directory_entry p) { // This gets the metadata from a chosen file.
+/// <summary>
+/// Initiialiser, this gets the metadata from a chosen file.
+/// </summary>
+/// <param name="p">The chosen file</param>
+File::File(fs::directory_entry p) {
 	this->name = p.path().filename().stem().string();
 	this->path = p.path().string();
 
@@ -45,7 +49,7 @@ File::File(fs::directory_entry p) { // This gets the metadata from a chosen file
 		this->type = "Folder";
 	} else {
 		std::string ext = p.path().extension().string();
-		std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); });
+		std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); }); // Make the extension lowercase
 
 		this->extension = ext;
 
@@ -85,20 +89,61 @@ File::File(fs::directory_entry p) { // This gets the metadata from a chosen file
 	}
 }
 
-// Getters
+/// <summary>
+/// Returns the name of the file
+/// </summary>
+/// <returns></returns>
 std::string File::getName() const { return name; }
+
+/// <summary>
+/// Returns the path of the file
+/// </summary>
+/// <returns></returns>
 std::string File::getPath() const { return path; }
+
+/// <summary>
+/// Returns the type of file (Text, Audio etc.)
+/// </summary>
+/// <returns></returns>
 std::string File::getType() const { return type; }
+
+/// <summary>
+/// Returns the extension of the file
+/// </summary>
+/// <returns></returns>
 std::string File::getExtension() const { return extension; }
+
+/// <summary>
+/// Returns the size in bytes of the file
+/// </summary>
+/// <returns></returns>
 int File::getSize() const { return size; }
+
+/// <summary>
+/// Returns when the file was last modified
+/// </summary>
+/// <returns></returns>
 std::time_t File::getDateMod() const { return dateMod; };
+
+/// <summary>
+/// Returns if this is a folder or not
+/// </summary>
+/// <returns></returns>
 bool File::getIsFolder() const { return isFolder; }
 
+/// <summary>
+/// Returns the name and extension of this file in one string
+/// </summary>
+/// <returns>The name and extension of this file in one string</returns>
 std::string File::getNameWithExtension() const {
 	std::string n = name + extension;
 	return n;
 }
 
+/// <summary>
+/// Returns an indicator of if this is a folder. Used for when the file is displayed in a list
+/// </summary>
+/// <returns></returns>
 std::string File::getIsFolderStr() const {
 	if (isFolder) {
 		return "|- ";
@@ -106,6 +151,10 @@ std::string File::getIsFolderStr() const {
 	return "|  ";
 }
 
+/// <summary>
+/// Returns the date modified converted to a string
+/// </summary>
+/// <returns>The date modified converted to a string</returns>
 std::string File::getDateModStr() const {
 #ifdef _WIN32
 	char buffer[26];

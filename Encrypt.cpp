@@ -8,7 +8,13 @@ namespace fs = std::filesystem;
 
 Encrypt::Encrypt() {}
 
-std::string Encrypt::encrypt(std::string path, std::string key) { // This returns the encrypted contents of a file.
+/// <summary>
+/// Takes an unencrypted text file and returns the encrypted contents of it
+/// </summary>
+/// <param name="path">The chosen filepath</param>
+/// <param name="key">The encryption key</param>
+/// <returns>The encrypted contents of a file</returns>
+std::string Encrypt::encrypt(std::string path, std::string key) { 
 	std::string returnStr = "";
 	std::ifstream file(path);
 
@@ -18,7 +24,7 @@ std::string Encrypt::encrypt(std::string path, std::string key) { // This return
 
 	std::string line;
 	while (std::getline(file, line)) { // For every line...
-		std::istringstream iss(line);
+		//std::istringstream iss(line);
 
 		std::string newStr = "";
 		for (int i = 0; i < line.length(); i++) { // For every character in the line...
@@ -35,6 +41,12 @@ std::string Encrypt::encrypt(std::string path, std::string key) { // This return
 	return returnStr;
 }
 
+/// <summary>
+/// Takes an encrypted file and returns the decrypted contents of it
+/// </summary>
+/// <param name="path">The chosen filepath</param>
+/// <param name="key">The encryption key</param>
+/// <returns>The decrypted contents of a file</returns>
 std::string Encrypt::decrypt(std::string path, std::string key) {
 	std::string returnStr = "";
 	std::ifstream file(path);
@@ -45,7 +57,7 @@ std::string Encrypt::decrypt(std::string path, std::string key) {
 
 	std::string line;
 	while (std::getline(file, line)) { // For every line...
-		std::istringstream iss(line);
+		//std::istringstream iss(line);
 
 		std::string newStr = "";
 		for (int i = 0; i < line.length(); i++) { // For every character in the line...

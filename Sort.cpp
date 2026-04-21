@@ -4,6 +4,12 @@ Sort::Sort(std::vector<File> fv) {
 	fileList = fv;
 }
 
+/// <summary>
+/// Takes a list of files and returns a sorted list.
+/// </summary>
+/// <param name="value">Which value to sort by</param>
+/// <param name="ord">What order to sort it by</param>
+/// <returns>The sorted list of files</returns>
 std::vector<File> Sort::sortList(std::string value, std::string ord) {
     if (value == "Name") {
         sortByName(ord);
@@ -18,6 +24,10 @@ std::vector<File> Sort::sortList(std::string value, std::string ord) {
     return fileList;
 }
 
+/// <summary>
+/// Sort the list of files by name
+/// </summary>
+/// <param name="order">What order to sort it by</param>
 void Sort::sortByName(std::string order) {
     for (int i = 0; i < fileList.size() - 1; i++) {
         for (int j = 0; j < fileList.size() - 1 - i; j++) {
@@ -28,6 +38,10 @@ void Sort::sortByName(std::string order) {
     }
 }
 
+/// <summary>
+/// Sort the list of files by date
+/// </summary>
+/// <param name="order">What order to sort it by</param>
 void Sort::sortByDate(std::string order) {
     for (int i = 0; i < fileList.size() - 1; i++) {
         for (int j = 0; j < fileList.size() - 1 - i; j++) {
@@ -38,6 +52,10 @@ void Sort::sortByDate(std::string order) {
     }
 }
 
+/// <summary>
+/// Sort the list of files by size
+/// </summary>
+/// <param name="order">What order to sort it by</param>
 void Sort::sortBySize(std::string order) {
     for (int i = 0; i < fileList.size() - 1; i++) {
         for (int j = 0; j < fileList.size() - 1 - i; j++) {
@@ -48,6 +66,10 @@ void Sort::sortBySize(std::string order) {
     }
 }
 
+/// <summary>
+/// Sort the list of files by extension
+/// </summary>
+/// <param name="order">What order to sort it by</param>
 void Sort::sortByExtension(std::string order) {
     for (int i = 0; i < fileList.size() - 1; i++) {
         for (int j = 0; j < fileList.size() - 1 - i; j++) {
