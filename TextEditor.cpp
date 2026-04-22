@@ -6,7 +6,7 @@ TextEditor::TextEditor(std::string filePath) {
     // Get the data from the file
     contents = ctrl.readFromFile(filePath);
 
-    do {
+    do { // Repeat until the file has been exited
         // TEXT EDITOR
         do { // Repeat until exit key pressed
             view.clearScreen();
@@ -83,7 +83,7 @@ void TextEditor::getInput() {
             case leftChar: changeColumn(-1); break; // Left Arrow
             case rightChar: changeColumn(1); break; // Right Arrow
             case homeChar: row = 1; changeRow(0); break;
-            case endChar: row = contents.size(); changeRow(0); view.showError("error test."); break;
+            case endChar: row = (int)contents.size(); changeRow(0); view.showError("error test."); break;
             default: break;
         }
         return;
@@ -115,8 +115,8 @@ void TextEditor::changeRow(int amt) {
     }
 
     // Make sure row doesn't go beyond the bottom
-    if (row > contents.size()) {
-        row = contents.size();
+    if (row > (int)contents.size()) {
+        row = (int)contents.size();
     }
 
     if (column > contents[row - 1].length()) { // If the newly selected row is shorter than the previous one...

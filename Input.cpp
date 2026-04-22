@@ -105,7 +105,9 @@ int Input::consoleHeight() {
 /// Fills the screen with black (empty) space.
 /// </summary>
 void Input::emptyScreen() {
-    for (int i = 0; i < consoleHeight(); i++) {
-        std::cout << std::string(120, ' ');
+    int width = consoleWidth();
+    int height = consoleHeight();
+    for (int i = 0; i < height; i++) {
+        std::cout << std::string(width, ' ');
     }
 }

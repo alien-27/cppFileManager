@@ -40,7 +40,9 @@ std::vector<File> search::doSearch(fs::path p) {
             case 51: addExtension(); break;
             case 52: addType(); break;
             case 53: recursive = !recursive; break; // Toggle recursive search
-            case enterChar: return ctr.executeSearch(p, query, minSize, maxSize, validExtensions, validTypes, recursive); // [Enter] Confirm
+            case enterChar: // [Enter] Confirm
+                view.printHeader("Searching... This might take a while if this is a big folder.");
+                return ctr.executeSearch(p, query, minSize, maxSize, validExtensions, validTypes, recursive);
             default: view.showError("Invalid Input"); break;
         }
     } while (true);

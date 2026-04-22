@@ -1,6 +1,6 @@
 #include "MainView.h"
 
-#include "AudioFile.h"
+//#include "AudioFile.h"
 #include "TextFile.h"
 
 using namespace std::chrono_literals;
@@ -123,7 +123,11 @@ void MainView::displayDetails(File& f) {
 
     // Get shortened version of the filepath if it is wider than the window.
     std::string pathEnd = f.getPath();
-    if (pathEnd.length() > input.consoleWidth() - 30) pathEnd = "..." + pathEnd.substr(pathEnd.length() - (input.consoleWidth() - 30));
+    if (pathEnd.length() > input.consoleWidth() - 27) pathEnd = "..." + pathEnd.substr(pathEnd.length() - (input.consoleWidth() - 30));
+
+    // Same as above, but with the date.
+    std::string dateEnd = f.getDateModStr();
+    if (dateEnd.length() > input.consoleWidth() - 26) dateEnd = "..." + dateEnd.substr(dateEnd.length() - (input.consoleWidth() - 29));
 
     int filledRows = 9; // How many rows have been filled.
 
@@ -133,7 +137,7 @@ void MainView::displayDetails(File& f) {
               << " | ___ | :     Extension: " << f.getExtension() << std::endl
               << " | ___ | :      Location: " << pathEnd << std::endl
               << " |_____| :          Size: " << f.getSize() << " bytes" << std::endl
-              << "         : Date Modified: " << f.getDateModStr()
+              << "         : Date Modified: " << dateEnd
               << "\033[44m\033[37m" << std::string(input.consoleWidth(), ' ') << "\033[0m" << std::endl;
 
     // Display filetype specific details.
@@ -141,12 +145,12 @@ void MainView::displayDetails(File& f) {
         TextFile& tf = static_cast<TextFile&>(f); // Turn f into a TextFile
         std::cout << "Lines: " << tf.getLines() << std::endl; // Display no of lines.
         filledRows += 1;
-    } else if (f.getType() == "Audio") {
-        AudioFile& af = static_cast<AudioFile&>(f);
-        std::cout << "   Duration: " << af.getLength() << " seconds" << std::endl
-                  << "Sample Rate: 0 kHz" << std::endl
-                  << "   Channels: Mono" << std::endl;
-        filledRows += 3;
+    //} else if (f.getType() == "Audio") {
+    //    AudioFile& af = static_cast<AudioFile&>(f);
+    //    std::cout << "   Duration: " << af.getLength() << " seconds" << std::endl
+    //              << "Sample Rate: 0 kHz" << std::endl
+    //              << "   Channels: Mono" << std::endl;
+    //    filledRows += 3;
     }
 
     // Fill empty rows to offset footer

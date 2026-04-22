@@ -1,5 +1,7 @@
 #include "TextEditorView.h"
 
+#include <algorithm>
+
 /// <summary>
 /// Displays a header
 /// </summary>
@@ -44,10 +46,22 @@ void TextEditorView::displayTextEditor(std::string filePath, std::vector<std::st
 
     printHeader("Edit File: " + filePath); // Display header
 
+    // Get the width of the longest line
+    //int longestLine = 0;
+    //for (std::string line : contents) {
+    //    if (line.length() > longestLine) longestLine = line.length();
+    //}
+
     // Get the number of the row to be displayed at the top.
     int startOffset = 0;
     if (row > (height / 2)) {
         startOffset = row - (height / 2);
+    }
+
+    // Get te horizontal scroll
+    int startOffsetX = 0;
+    if (column > (width / 2)) {
+        startOffsetX = column - (width / 2);
     }
 
     int rowsToPrint = height - 2;
@@ -58,17 +72,17 @@ void TextEditorView::displayTextEditor(std::string filePath, std::vector<std::st
         std::string curRowText = ""; // The text to be displayed
 
         if (i + startOffset < contents.size()) {
-            if (curRow == row) { // If this is the selected row...
+            //if (curRow == row) { // If this is the selected row...
                 std::string fullRow = contents[i + startOffset] + " ";
 
-                for (int j = 0; j < fullRow.length(); j++) { // .. for every character...
-                    if (j == column) curRowText += "\033[47m\033[30m"; // if this character is selected, give it different colours
+                for (int j = startOffsetX; j < std::min((int)fullRow.length(), startOffsetX + width - (rowCountWidth + 1)); j++) { // .. for every character...
+                    if (curRow == row && j == column) curRowText += "\033[47m\033[30m"; // if this character is selected, give it different colours
                     curRowText += fullRow[j]; // add the character
-                    if (j == column) curRowText += "\033[0m";
+                    if (curRow == row && j == column) curRowText += "\033[0m";
                 }
-            } else { // ...else add the contents of the row to the string
-                curRowText = contents[i + startOffset];
-            }
+            //} else { // ...else add the contents of the row to the string
+            //    curRowText = contents[i + startOffset];
+            //}
         }
 
         // Print the row

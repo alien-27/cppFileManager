@@ -7,7 +7,7 @@ namespace fs = std::filesystem;
 /// <summary>
 /// Stores a filepath to be pasted
 /// </summary>
-/// <param name="p">The Filepath</param>
+/// <param name="p">The filepath to be copied</param>
 /// <param name="c">If we want to cut the file</param>
 void Clipboard::copy(std::string p, bool c) {
 	cutting = c;
