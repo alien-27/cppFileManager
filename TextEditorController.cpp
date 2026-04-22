@@ -15,17 +15,16 @@ std::vector<std::string> TextEditorController::readFromFile(std::string filePath
 	if (file.is_open()) {
 		std::string line;
         while (std::getline(file, line)) { // For every line...
-            std::string lineToAdd = "";
-            for (char letter : line) {
-                if (letter == '	') {
-                    lineToAdd += "      ";
-                }
-                else {
-                    lineToAdd += letter;
+            std::string lineToAdd = ""; // The string that gets added to the vector.
+            for (char letter : line) { // For each charater in the line...
+                if (letter == '	') { // If this is a tab...
+                    lineToAdd += "      "; // Replace it with four spaces so visual errors don't happen.
+                } else {
+                    lineToAdd += letter; //... else add it to the string
                 }
             }
 
-            fileData.push_back(lineToAdd); // Add it to the vector
+            fileData.push_back(lineToAdd); // Add string to the vector
         }
 	}
 

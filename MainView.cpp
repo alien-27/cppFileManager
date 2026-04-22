@@ -17,13 +17,12 @@ void MainView::displayFiles(std::vector<File> f, int selected) {
     std::cout << setColour(-1 == selected) << "<< Exit" << std::string(width - 7, ' ') << std::endl;
 
     if (f.empty()) { // If this folder is empty...
-        std::cout << "\033[0mThis folder is empty." << std::endl; // Say it is and don't do the rest of this script
+        std::cout << "\033[0mThis folder is empty." << std::endl; // Say so and stop here.
         return;
     }
 
     // Get the width of the longest filename.
     int longestStr = 0;
-
     for (const auto& file : f) {
         if (file.getNameWithExtension().length() > longestStr) {
             longestStr = (int)file.getNameWithExtension().length();
@@ -145,12 +144,6 @@ void MainView::displayDetails(File& f) {
         TextFile& tf = static_cast<TextFile&>(f); // Turn f into a TextFile
         std::cout << "Lines: " << tf.getLines() << std::endl; // Display no of lines.
         filledRows += 1;
-    //} else if (f.getType() == "Audio") {
-    //    AudioFile& af = static_cast<AudioFile&>(f);
-    //    std::cout << "   Duration: " << af.getLength() << " seconds" << std::endl
-    //              << "Sample Rate: 0 kHz" << std::endl
-    //              << "   Channels: Mono" << std::endl;
-    //    filledRows += 3;
     }
 
     // Fill empty rows to offset footer

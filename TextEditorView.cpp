@@ -44,27 +44,21 @@ void TextEditorView::displayTextEditor(std::string filePath, std::vector<std::st
     int width = input.consoleWidth();
     int height = input.consoleHeight();
 
-    printHeader("Edit File: " + filePath); // Display header
+    printHeader("Edit File: " + filePath); // Display the header
 
-    // Get the width of the longest line
-    //int longestLine = 0;
-    //for (std::string line : contents) {
-    //    if (line.length() > longestLine) longestLine = line.length();
-    //}
-
-    // Get the number of the row to be displayed at the top.
+    // Get the verical offset (the number of the row to be displayed at the top of the screen)
     int startOffset = 0;
     if (row > (height / 2)) {
         startOffset = row - (height / 2);
     }
 
-    // Get te horizontal scroll
+    // Get the horizontal offset
     int startOffsetX = 0;
     if (column > (width / 2)) {
         startOffsetX = column - (width / 2);
     }
 
-    int rowsToPrint = height - 2;
+    int rowsToPrint = height - 2; // How many rows we are displaying
     int rowCountWidth = std::to_string(startOffset + rowsToPrint).length(); // The width of the row counter at the left
 
     for (int i = 0; i < rowsToPrint; i++) { // For every line...
