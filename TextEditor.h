@@ -14,6 +14,8 @@ class TextEditor {
         int row = 1;
         bool exit = false;
 
+        bool skipNextInput = false;
+
         Input input;
         TextEditorView view;
         TextEditorController ctrl;

@@ -52,11 +52,7 @@ int Input::consoleHeight() {
 #else
 
 #include <termios.h>
-#include <cstdlib>
-
 #include <sys/ioctl.h>
-#include <stdio.h>
-
 #include <unistd.h>
 
 /// <summary>

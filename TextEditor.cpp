@@ -53,7 +53,6 @@ void TextEditor::getInput() {
     int const endChar = 79;
     int const bkspChar = 8;
     int const enterChar = 13;
-    int const escChar = 27;
 #else
     int const upChar = 65;
     int const downChar = 66;
@@ -64,7 +63,6 @@ void TextEditor::getInput() {
     int const endChar = 70;
     int const bkspChar = 127;
     int const enterChar = 10;
-    int const escChar = 48;
 #endif
 
     int charInput = input.getch(); // Get character input
@@ -86,10 +84,19 @@ void TextEditor::getInput() {
             case endChar: row = (int)contents.size(); changeRow(0); view.showError("error test."); break;
             default: break;
         }
+        skipNextInput = false;
         return;
     } else {
         switch (charInput) {
-            case escChar: exit = true; return; // 0 (Exit)
+            case 27:
+                if (skipNextInput) {
+                    skipNextInput = false;
+                    exit = true;
+                } else {
+                    skipNextInput = true;
+                    return;
+                }
+            return; // Esc (Exit)
             case bkspChar: bkspPress(); break; // Backspace
             case enterChar: enterPress(); break; // Enter
             default: // Other keyboard inputs (insert inputted letter into file)
